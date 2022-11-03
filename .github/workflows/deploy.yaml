@@ -1,0 +1,55 @@
+name: "Deploy"
+on:
+  workflow_call:
+    inputs:
+      k8s-release-name:
+        required: false
+        type: string
+      k8s-namespace:
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    container: dtzar/helm-kubectl:3.9.4
+    environment: ${{ inputs.environment }}
+    env:
+      HELM_EXPERIMENTAL_OCI: 1
+      HELM_RELEASE_NAME: ${{ github.event.repository.name }}-${{ inputs.environment }}
+      KUBE_NAMESPACE: ${{ github.event.repository.name }}-${{ inputs.environment }}
+      HELM_EXTRA_ARGS: >
+        --values ops/${{ inputs.environment }}-deploy.yaml
+      KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
+      KUBECONFIG: ./kubeconfig.yml
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      GOOGLE_FONTS_KEY: ${{ secrets.GOOGLE_FONTS_KEY }}
+      IA_PASSWORD: ${{ secrets.IA_PASSWORD }}
+      MAIL_PASS: ${{ secrets.MAIL_PASS }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+      SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      SOLR_ADMIN_PASSWORD: ${{ secrets.SOLR_ADMIN_PASSWORD }}
+    steps:
+      - id: setup
+        name: Setup
+        uses: scientist-softserv/build-lint-test-action/setup-env@main
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        with:
+          limit-access-to-actor: true
+      - name: Do deploy
+        run: >-
+          echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
+          DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
+          export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
+          export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;
+          ./bin/helm_deploy ${{ inputs.k8s-release-name || format('{0}-{1}', github.event.repository.name, inputs.environment) }} ${{ inputs.k8s-namespace || format('{0}-{1}', github.event.repository.name, inputs.environment) }}

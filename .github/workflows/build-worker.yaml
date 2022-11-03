@@ -42,7 +42,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          target: ${{ input.target }}
+          target: ${{ inputs.target }}
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true

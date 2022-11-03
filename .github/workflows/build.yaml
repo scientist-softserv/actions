@@ -5,7 +5,7 @@ on:
       target:
         required: false
         type: string
-    workflow_call:
+  workflow_call:
     inputs:
       target:
         required: false

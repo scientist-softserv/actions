@@ -12,7 +12,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/build-lint-test-action/setup-env@main
+        uses: scientist-softserv/actions/setup-env@main
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Github Container Login

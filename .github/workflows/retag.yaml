@@ -13,7 +13,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/build-lint-test-action/setup-env@main
+        uses: scientist-softserv/actions/setup-env@main
       - name: Retag web to latest
         uses: koraykoska/retag-docker-image@0.2.4
         with:

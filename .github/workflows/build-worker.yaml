@@ -36,7 +36,7 @@ jobs:
       - name: Pull from cache to speed up build
         run: >-
           touch .env.development;
-          TAG=latest docker-compose pull web || true
+          docker-compose pull web || true
       - name: Build and push worker
         uses: docker/build-push-action@v3
         with:

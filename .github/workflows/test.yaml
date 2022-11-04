@@ -1,7 +1,15 @@
 name: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
+    inputs:
+      worker:
+        required: false
+        type: boolean
   workflow_call:
+    inputs:
+      worker:
+        required: false
+        type: boolean
 
 env:
   REGISTRY: ghcr.io
@@ -42,11 +50,14 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - name: Pull from cache to speed up build
+      - name: Pull image to prevent build
         run: >-
           touch .env.development;
-          docker-compose pull web;
+          docker-compose pull web
+      - name: Pull worker image to prevent build
+        run: >-
           docker-compose pull worker
+        if: ${{ inputs.worker }}
       - name: Start containers
         run: docker-compose up -d web
       - name: Setup solr

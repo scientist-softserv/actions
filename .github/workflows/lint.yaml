@@ -5,12 +5,17 @@ on:
       worker:
         required: false
         type: boolean
+      tag:
+        required: false
+        type: string
   workflow_call:
     inputs:
       worker:
         required: false
         type: boolean
-
+      tag:
+        required: false
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -22,6 +27,8 @@ jobs:
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
+        with:
+          tag: ${{ inputs.tag }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Github Container Login

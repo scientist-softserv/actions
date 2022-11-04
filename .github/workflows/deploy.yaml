@@ -8,6 +8,10 @@ on:
       k8s-namespace:
         required: false
         type: string
+      tag:
+        description: "Tag to override default of current branch sha"
+        required: false
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -39,6 +43,8 @@ jobs:
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
+        with:
+          tag: ${{ inputs.tag }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup tmate session

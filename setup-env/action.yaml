@@ -1,5 +1,9 @@
 name: "Set up env vars"
 description: "Set up env vars"
+inputs:
+  tag:
+    required: false
+    type: string
 
 runs:
   using: "composite"
@@ -9,7 +13,7 @@ runs:
         echo "TAG=${HEAD_TAG::8}" >> ${GITHUB_ENV};
         echo ${HEAD_TAG::8}
       env:
-        HEAD_TAG: ${{ github.event.pull_request.head.sha || github.sha }}
+        HEAD_TAG: ${{ inputs.tag || github.event.pull_request.head.sha || github.sha }}
       shell: bash
     - name: Downcase repo
       run: |

@@ -5,9 +5,15 @@ on:
       target:
         required: false
         type: string
+      tag:
+        required: false
+        type: string
   workflow_call:
     inputs:
       target:
+        required: false
+        type: string
+      tag:
         required: false
         type: string
 
@@ -21,6 +27,8 @@ jobs:
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
+        with:
+          tag: ${{ inputs.tag }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Set up QEMU

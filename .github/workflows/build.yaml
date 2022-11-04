@@ -2,18 +2,30 @@ name: "Build Docker Images"
 on:
   workflow_dispatch:
     inputs:
+      tag:
+        required: false
+        type: string
       target:
         required: false
         type: string
-      tag:
+      worker:
+        required: false
+        type: boolean
+      workerTarget:
         required: false
         type: string
   workflow_call:
     inputs:
+      tag:
+        required: false
+        type: string
       target:
         required: false
         type: string
-      tag:
+      worker:
+        required: false
+        type: boolean
+      workerTarget:
         required: false
         type: string
 
@@ -56,3 +68,15 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+      - name: Build and push worker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          target: ${{ inputs.workerTarget }}
+          cache-from: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+        if: ${{ inputs.worker }}

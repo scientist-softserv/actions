@@ -2,6 +2,9 @@ name: "Build Docker Images"
 on:
   workflow_dispatch:
     inputs:
+      platforms:
+        default: "linux/amd64,linux/arm64"
+        type: string
       tag:
         required: false
         type: string
@@ -16,6 +19,9 @@ on:
         type: string
   workflow_call:
     inputs:
+      platforms:
+        default: "linux/amd64,linux/arm64"
+        type: string
       tag:
         required: false
         type: string
@@ -61,7 +67,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ inputs.platforms }}
           target: ${{ inputs.target }}
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
@@ -72,7 +78,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ inputs.platforms }}
           target: ${{ inputs.workerTarget }}
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}

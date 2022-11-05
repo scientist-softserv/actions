@@ -46,14 +46,13 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          echo "${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}";
           docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}
       - name: Pull worker image to prevent build
-        if: ${{ inputs.worker }}
+        if: ${{ inputs.worker == 'true' }}
         run: >-
-          docker pull ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }};
+          docker pull ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }}
       - name: Run Rubocop
-        run: docker run web bundle exec rubocop --parallel --format progress
+        run: bundle exec rubocop --parallel --format progress
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

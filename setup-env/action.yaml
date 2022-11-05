@@ -17,7 +17,7 @@ runs:
       shell: bash
     - name: Downcase repo
       run: |
-        echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
+        echo "REPO_LOWER=${REPO}" >> ${GITHUB_ENV}
       env:
         REPO: "${{ github.repository }}"
       shell: bash

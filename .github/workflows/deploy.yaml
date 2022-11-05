@@ -43,7 +43,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@update-to-new-actions-library
+        uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code

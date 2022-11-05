@@ -1,8 +1,10 @@
 name: GitGuardian scan
-
 on:
   workflow_dispatch:
   workflow_call:
+
+env:
+  REGISTRY: ghcr.io
 
 jobs:
   scan:

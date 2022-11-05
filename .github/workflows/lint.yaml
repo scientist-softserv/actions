@@ -31,13 +31,17 @@ jobs:
           tag: ${{ inputs.tag }}
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}
+          path: ${{ github.event.repository.name }}
       - name: Github Container Login
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull image to prevent build
+      - name: Pull image to prevent build # line 1 (line 45?): docker-compose: command not found
+                                          # Error: Process completed with exit code 127.
         run: >-
           touch .env.development;
           touch .env;

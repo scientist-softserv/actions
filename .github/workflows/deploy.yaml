@@ -32,6 +32,7 @@ jobs:
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       GOOGLE_FONTS_KEY: ${{ secrets.GOOGLE_FONTS_KEY }}
+      GOOGLE_OAUTH_PRIVATE_KEY_SECRET: ${{ secrets.GOOGLE_OAUTH_PRIVATE_KEY_SECRET }}
       IA_PASSWORD: ${{ secrets.IA_PASSWORD }}
       MAIL_PASS: ${{ secrets.MAIL_PASS }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}

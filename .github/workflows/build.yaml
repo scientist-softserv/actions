@@ -40,11 +40,11 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@update-to-new-actions-library
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code
@@ -53,6 +53,8 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        # with:
+        #   enpoint: mycontext
       - name: Github Container Login
         uses: docker/login-action@v2
         with:

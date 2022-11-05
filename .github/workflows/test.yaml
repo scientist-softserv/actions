@@ -21,7 +21,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -41,7 +41,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@update-to-new-actions-library
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code

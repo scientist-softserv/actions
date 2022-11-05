@@ -22,11 +22,11 @@ env:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@update-to-new-actions-library
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code

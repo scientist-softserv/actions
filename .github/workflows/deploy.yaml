@@ -17,8 +17,8 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  deployment:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
     container: dtzar/helm-kubectl:3.9.4
     environment: ${{ inputs.environment }}
     env:
@@ -43,7 +43,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@update-to-new-actions-library
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code

@@ -44,6 +44,8 @@ jobs:
           limit-access-to-actor: true
       - name: Pull image to prevent build
         run: >-
+          ls -la;
+          docker ps;
           touch .env.development;
           touch .env;
           docker-compose pull web

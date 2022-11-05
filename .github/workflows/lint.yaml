@@ -44,15 +44,16 @@ jobs:
           limit-access-to-actor: true
       - name: Pull image to prevent build
         run: >-
-          ls -la;
-          docker ps;
           touch .env.development;
           touch .env;
-          docker-compose pull web
+          ls -la;
+          docker ps;
+          docker pull ghcr.io/scientist-softserv/arce:${{ env.TAG }};
+          docker ps
       - name: Pull worker image to prevent build
-        run: >-
-          docker-compose pull worker
         if: ${{ inputs.worker }}
+        run: >-
+          docker pull ghcr.io/scientist-softserv/arce/worker:${{ env.TAG }};
       - name: Run Rubocop
         run: docker-compose run web bundle exec rubocop --parallel --format progress
       - name: Publish Test Report

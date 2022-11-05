@@ -47,7 +47,7 @@ jobs:
           touch .env.development;
           touch .env;
           docker-compose pull web
-                - name: Pull worker image to prevent build
+      - name: Pull worker image to prevent build
         run: >-
           docker-compose pull worker
         if: ${{ inputs.worker }}

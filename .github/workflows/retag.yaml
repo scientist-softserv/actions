@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Retag worker to latest
         uses: koraykoska/retag-docker-image@0.2.4
-        if: ${{ inputs.worker == 'true' }}
+        if: ${{ inputs.worker }}
         with:
           registry: ${{ env.REGISTRY }}
           name: ${{ env.REPO_LOWER }}/worker

@@ -45,7 +45,7 @@ jobs:
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
         with:
-          tag: ${{ inputs.tag }}
+          tag: ${{ inputs.tag || env.TAG }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup tmate session

@@ -28,7 +28,7 @@ jobs:
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
         with:
-          tag: ${{ inputs.tag }}
+          tag: ${{ inputs.tag || env.TAG }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Github Container Login
@@ -41,14 +41,12 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}
+          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Pull worker image to prevent build
         if: ${{ inputs.worker == 'true' }}
-        run: >-
-          docker pull ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }}
+        run: docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
       - name: Run Rubocop
-        run: >- 
-          docker run ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bundle exec rubocop --parallel --format progress
+        run: docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bundle exec rubocop --parallel --format progress
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

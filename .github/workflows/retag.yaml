@@ -49,6 +49,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Retag worker to latest
         uses: koraykoska/retag-docker-image@0.2.4
+        if: ${{ inputs.worker == 'true' }}
         with:
           registry: ${{ env.REGISTRY }}
           name: ${{ env.REPO_LOWER }}/worker
@@ -56,4 +57,3 @@ jobs:
           new_tag: latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ inputs.worker }}

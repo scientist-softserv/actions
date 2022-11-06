@@ -8,12 +8,18 @@ on:
       tag:
         required: false
         type: string
+      confdir:
+        required: false
+        type: string
   workflow_call:
     inputs:
       worker:
         required: false
         type: boolean
       tag:
+        required: false
+        type: string
+      confdir:
         required: false
         type: string
 env:
@@ -34,7 +40,7 @@ jobs:
         ci_node_index: [0, 1, 2]
     env:
       ALLOW_ANONYMOUS_LOGIN: "yes"
-      CONFDIR: /app/samvera/hyrax-webapp/solr/conf
+      CONFDIR: "/app/samvera/hyrax-webapp/solr/conf"
       DB_CLEANER_ALLOW_REMOTE_DB_URL: "true"
       TB_RSPEC_FORMATTER: progress
       TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml
@@ -61,24 +67,24 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}
+          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Pull worker image to prevent build
         if: ${{ inputs.worker == 'true' }}
-        run: docker pull ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }}
+        run: docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
       - name: Setup solr
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
-          "solrcloud-upload-configset.sh ${{ env.CONFDIR }} &&
+          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
+          "solrcloud-upload-configset.sh ${{ inputs.confdir }} &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
       - name: Setup db
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
+          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
           "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
       - name: Start containers
         run: >-
-          docker run ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}   
-          docker run ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }}  
+          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}   
+          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}  
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,
@@ -88,7 +94,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
+          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
           "gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report

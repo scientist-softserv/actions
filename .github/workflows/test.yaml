@@ -8,9 +8,6 @@ on:
       tag:
         required: false
         type: string
-      confdir:
-        required: false
-        type: string
 
   workflow_call:
     inputs:

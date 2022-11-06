@@ -25,11 +25,19 @@ jobs:
     runs-on: self-hosted
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
+      - name: Tell me what's my TAG Before
+        run: >-
+          echo "My env.tag is: '${{ env.TAG }}'"
+          echo "My inputs.tag is '${{ inputs.tag }}'"
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
-          tag: ${{ inputs.tag }} || ${{ env.TAG }}
+          tag: ${{ inputs.tag || env.TAG }}
+      - name: Tell me what's my TAG After the inputs.tag override
+        run: >-
+          echo "Don't forget our inputs.tag is ${{ inputs.tag }}"
+          echo "And now inputs.tag should override env.tag from the input in Stage 'Tell me what's my TAG Before' to ${{ env.TAG }}, which should be a different value only if their was a value in inputs.tag"
       - name: Retag web to latest
         uses: koraykoska/retag-docker-image@0.2.4
         with:

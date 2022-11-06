@@ -8,7 +8,6 @@ on:
       tag:
         required: false
         type: string
-
   workflow_call:
     inputs:
       worker:
@@ -89,7 +88,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker run exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
+          docker exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
           "gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report

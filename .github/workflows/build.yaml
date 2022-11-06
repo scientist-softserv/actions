@@ -46,7 +46,7 @@ jobs:
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
         with:
-          tag: ${{ inputs.tag || env.TAG }}
+          tag: ${{ inputs.tag }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -67,16 +67,18 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:latest
+          TAG=latest pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} || true
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.target }}
-          cache-from: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          cache-from: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Build and push worker
         uses: docker/build-push-action@v3
         if: ${{ inputs.worker }}
@@ -84,6 +86,8 @@ jobs:
           context: .
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.workerTarget }}
-          cache-from: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          cache-from: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}

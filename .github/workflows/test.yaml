@@ -8,7 +8,7 @@ on:
       tag:
         required: false
         type: string
-      confdir:
+            confdir:
         required: false
         type: string
   workflow_call:
@@ -49,7 +49,7 @@ jobs:
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
         with:
-          tag: ${{ inputs.tag || env.TAG }}
+          tag: ${{ inputs.tag }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Github Container Login
@@ -70,7 +70,11 @@ jobs:
           docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Pull worker image to prevent build
         if: ${{ inputs.worker }}
-        run: docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+        run: >-
+          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+      - name: Start containers
+        run: >-
+          docker run -d ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Setup solr
         run: >-
           docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
@@ -81,10 +85,6 @@ jobs:
         run: >-
           docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
           "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
-      - name: Start containers
-        run: >-
-          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}   
-          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}  
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,

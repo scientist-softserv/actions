@@ -73,7 +73,7 @@ jobs:
         run: docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
       - name: Setup solr
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }} bash -c
+          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
           "solrcloud-upload-configset.sh ${{ inputs.confdir }} &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"

@@ -67,18 +67,16 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          TAG=latest docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:latest
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.target }}
-          cache-from: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          cache-from: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Build and push worker
         uses: docker/build-push-action@v3
         if: ${{ inputs.worker == 'true' }}
@@ -86,8 +84,6 @@ jobs:
           context: .
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.workerTarget }}
-          cache-from: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          cache-from: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}

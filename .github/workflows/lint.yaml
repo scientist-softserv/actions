@@ -43,7 +43,7 @@ jobs:
           touch .env;
           docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Pull worker image to prevent build
-        if: ${{ inputs.worker == 'true' }}
+        if: ${{ inputs.worker }}
         run: docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
       - name: Run Rubocop
         run: docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bundle exec rubocop --parallel --format progress

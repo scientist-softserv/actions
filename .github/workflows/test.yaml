@@ -8,7 +8,7 @@ on:
       tag:
         required: false
         type: string
-            confdir:
+      confdir:
         required: false
         type: string
   workflow_call:
@@ -102,4 +102,3 @@ jobs:
         if: always() # always run even if the previous step fails
         with:
           report_paths: 'rspec*.xml'
-          fail_on_failure: true

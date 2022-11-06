@@ -79,7 +79,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Build and push worker
         uses: docker/build-push-action@v3
-        if: ${{ inputs.worker == 'true' }}
+        if: ${{ inputs.worker }}
         with:
           context: .
           platforms: ${{ inputs.platforms }}

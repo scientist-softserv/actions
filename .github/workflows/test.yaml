@@ -72,16 +72,23 @@ jobs:
         if: ${{ inputs.worker }}
         run: >-
           docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
-      - name: Setup solr
+      - name: Start containers
         run: >-
           docker run -d ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }};
+          docker ps;
+          ls -la;
+          docker logs ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} -f
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
+      - name: Setup solr
+        run: >-
           docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
           "solrcloud-upload-configset.sh ${{ inputs.confdir }} &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
       - name: Setup db
         run: >-
-          docker run -d ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}; 
           docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
           "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
       - name: Run Specs

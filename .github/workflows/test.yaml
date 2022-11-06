@@ -8,6 +8,10 @@ on:
       tag:
         required: false
         type: string
+      confdir:
+        required: false
+        type: string
+
   workflow_call:
     inputs:
       worker:
@@ -34,7 +38,7 @@ jobs:
         ci_node_index: [0, 1, 2]
     env:
       ALLOW_ANONYMOUS_LOGIN: "yes"
-      CONFDIR: "/app/samvera/hyrax-webapp/solr/config"
+      CONFDIR: ${{ inputs.confdir }}
       DB_CLEANER_ALLOW_REMOTE_DB_URL: "true"
       TB_RSPEC_FORMATTER: progress
       TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml
@@ -43,7 +47,7 @@ jobs:
         name: Setup
         uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
-          tag: ${{ inputs.tag }}
+          tag: ${{ inputs.tag || env.TAG }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Github Container Login
@@ -61,23 +65,24 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          docker-compose pull web
+          docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}
       - name: Pull worker image to prevent build
-        run: >-
-          docker-compose pull worker
-        if: ${{ inputs.worker }}
-      - name: Start containers
-        run: docker-compose up -d web
+        if: ${{ inputs.worker == 'true' }}
+        run: docker pull ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }}
       - name: Setup solr
         run: >-
-          docker-compose exec -T web bash -c
-          "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
+          docker exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
+          "solrcloud-upload-configset.sh ${{ env.CONFDIR }} &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
       - name: Setup db
         run: >-
-          docker-compose exec -T web bash -c
+          docker exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
           "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
+      - name: Start containers
+        run: >-
+          docker run ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}   
+          docker run ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }}  
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,
@@ -87,7 +92,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker-compose exec -T web bash -c
+          docker run exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
           "gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report
@@ -95,3 +100,4 @@ jobs:
         if: always() # always run even if the previous step fails
         with:
           report_paths: 'rspec*.xml'
+          fail_on_failure: true

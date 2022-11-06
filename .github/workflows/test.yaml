@@ -67,13 +67,13 @@ jobs:
         run: docker pull ${{ env.REGISTRY }}/${{ github.repository }}/worker:${{ env.TAG }}
       - name: Setup solr
         run: >-
-          docker exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
+          docker exec ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
           "solrcloud-upload-configset.sh ${{ env.CONFDIR }} &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
       - name: Setup db
         run: >-
-          docker exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
+          docker exec ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
           "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
       - name: Start containers
         run: >-
@@ -88,7 +88,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker exec -T ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
+          docker exec ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }} bash -c
           "gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report

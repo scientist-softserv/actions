@@ -44,6 +44,48 @@ jobs:
       DB_CLEANER_ALLOW_REMOTE_DB_URL: "true"
       TB_RSPEC_FORMATTER: progress
       TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml
+      CHROME_HOSTNAME: chrome
+      DB_ADAPTER: postgresql
+      DB_HOST: db
+      DB_NAME: hyku
+      DB_URL: postgres://postgres:DatabaseFTW@db/hyku
+      DB_PASSWORD: DatabaseFTW
+      DB_TEST_NAME: hyku_test
+      DB_USER: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      FCREPO_HOST: fcrepo
+      FCREPO_PORT: 8080
+      FCREPO_URL: http://fcrepo:8080/rest
+      HYKU_BULKRAX_ENABLED: true
+      INITIAL_ADMIN_EMAIL: admin@example.com
+      INITIAL_ADMIN_PASSWORD: testing123
+      IN_DOCKER: true
+      LD_LIBRARY_PATH: /opt/fits/tools/mediainfo/linux
+      PASSENGER_APP_ENV: development
+      RAILS_LOG_TO_STDOUT: true
+      REDIS_HOST: redis
+      SECRET_KEY_BASE: asdf
+      HYRAX_ACTIVE_JOB_QUEUE: sidekiq
+      HYRAX_FITS_PATH: /app/fits/fits.sh
+      SOLR_ADMIN_PASSWORD: SolrRocks
+      SOLR_ADMIN_USER: solr
+      SOLR_COLLECTION_NAME: hydra-development
+      SOLR_CONFIGSET_NAME: hyku
+      SOLR_HOST: solr
+      SOLR_PORT: 8983
+      SOLR_URL: http://solr:SolrRocks@solr:8983/solr/
+      HYKU_ADMIN_HOST: utk-hyku.test
+      HYKU_ADMIN_ONLY_TENANT_CREATION: false
+      HYKU_DEFAULT_HOST: %{tenant}.utk-hyku.test
+      HYKU_ROOT_HOST: utk-hyku.test
+      HYKU_MULTITENANT: true
+      GOOGLE_OAUTH_APP_NAME: UTK-Hyku
+      GOOGLE_OAUTHAPP_VERSION: 1.0
+      GOOGLE_OAUTH_PRIVATE_KEY_PATH: cred.p12
+      GOOGLE_OAUTH_PRIVATE_KEY_SECRET: notasecret
+      GOOGLE_OAUTH_CLIENT_EMAIL: hyku-analytics@hyku-analytics.iam.gserviceaccount.com
+
     steps:
       - id: setup
         name: Setup
@@ -69,17 +111,18 @@ jobs:
           docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
       - name: Start containers
         run: >-
-          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
+          docker run -d ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Setup solr
         run: >-
-          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
-          "solrcloud-upload-configset.sh ${{ inputs.confdir }} &&
+          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c "
+          solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/conf &&
+          solrcloud-assign-configset.sh &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
       - name: Setup db
         run: >-
-          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
-          "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
+          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c "
+          RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,
@@ -89,8 +132,8 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
-          "gem install semaphore_test_boosters &&
+          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c "
+          gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3

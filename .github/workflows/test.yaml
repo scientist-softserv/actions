@@ -97,3 +97,4 @@ jobs:
         if: always() # always run even if the previous step fails
         with:
           report_paths: 'rspec*.xml'
+          fail_on_failure: true

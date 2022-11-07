@@ -77,7 +77,6 @@ jobs:
       SOLR_URL: http://solr:SolrRocks@solr:8983/solr/
       HYKU_ADMIN_HOST: utk-hyku.test
       HYKU_ADMIN_ONLY_TENANT_CREATION: false
-      HYKU_DEFAULT_HOST: %{tenant}.utk-hyku.test
       HYKU_ROOT_HOST: utk-hyku.test
       HYKU_MULTITENANT: true
       GOOGLE_OAUTH_APP_NAME: UTK-Hyku

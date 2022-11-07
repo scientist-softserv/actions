@@ -67,11 +67,11 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          docker-compose pull web
       - name: Pull worker image to prevent build
         if: ${{ inputs.worker }}
         run: >-
-          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          docker-compose pull worker
       - name: Start containers
         run: >-
           docker-compose up -d web

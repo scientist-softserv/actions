@@ -22,7 +22,7 @@ env:
 
 jobs:
   lint:
-    runs-on:  self-hosted
+    runs-on: self-hosted
     steps:
       - id: setup
         name: Setup
@@ -41,13 +41,13 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          docker-compose pull web
       - name: Pull worker image to prevent build
         if: ${{ inputs.worker }}
         run: >-
-          docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          docker-compose pull worker
       - name: Run Rubocop
-        run: docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bundle exec rubocop --parallel --format progress
+        run: docker-compose run web bundle exec rubocop --parallel --format progress
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

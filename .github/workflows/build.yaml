@@ -68,7 +68,7 @@ jobs:
         run: >-
           touch .env.development;
           touch .env;
-          TAG=latest docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} || true
+          TAG=latest docker-compose pull web || true
       - name: Build and push
         uses: docker/build-push-action@v3
         with:

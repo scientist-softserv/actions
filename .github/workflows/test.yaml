@@ -58,11 +58,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-        with:
-          limit-access-to-actor: true
       - name: Pull image to prevent build
         run: >-
           touch .env.development;
@@ -74,22 +69,16 @@ jobs:
           docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
       - name: Start containers
         run: >-
-          docker run -d ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }};
-          docker ps;
-          ls -la;
-          docker logs ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} -f
-      - name: Sleep for 30 seconds
-        run: sleep 30s
-        shell: bash
+          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
       - name: Setup solr
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
+          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
           "solrcloud-upload-configset.sh ${{ inputs.confdir }} &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
       - name: Setup db
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
+          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
           "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
       - name: Run Specs
         env:
@@ -100,7 +89,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
+          docker run ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash;
           "gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report

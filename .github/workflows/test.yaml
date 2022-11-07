@@ -74,16 +74,16 @@ jobs:
           docker pull ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
       - name: Start containers
         run: >-
-          docker run -d ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          docker-compose up -d web
       - name: Setup solr
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c 
+          docker-compose exec -T web bash -c
           "solrcloud-upload-configset.sh ${{ inputs.confdir }} &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
       - name: Setup db
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
+          docker-compose exec -T web bash -c
           "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
       - name: Run Specs
         env:
@@ -94,7 +94,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker exec ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }} bash -c
+          docker-compose exec -T web bash -c
           "gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report
@@ -102,4 +102,3 @@ jobs:
         if: always() # always run even if the previous step fails
         with:
           report_paths: 'rspec*.xml'
-          fail_on_failure: true

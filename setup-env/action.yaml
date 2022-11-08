@@ -21,19 +21,7 @@ runs:
       shell: bash
       run: |
         echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
-    - name: Make sure docker-compose is installed
-      run: |
-        if [ ! -f $DOCKER_CONFIG/cli-plugins/docker-compose ]
-        then
-          echo "which docker" &&
-          DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker} &&
-          mkdir -p $DOCKER_CONFIG/cli-plugins &&
-          curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose &&
-          sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose &&
-          sudo ls -la $DOCKER_CONFIG/cli-plugins &&
-          echo "docker compose version"
-        else
-          echo "$DOCKER_CONFIG/cli-plugins/docker-compose is already installed and given the below permisisons and version:" &&
-          sudo ls -la $DOCKER_CONFIG/cli-plugins &&
-          echo "docker compose version"
-        fi
+    - name: Install docker-compose
+      uses: KengoTODA/actions-setup-docker-compose@main
+      with:
+        version: '1.29.2'

@@ -75,6 +75,7 @@ jobs:
       - name: Start containers
         run: docker-compose up -d web
       - name: Check for and setup Solr if needed
+        shell: bash
         run: |
           if [ -d solr ]
           then

@@ -26,7 +26,8 @@ runs:
       run: |
         if [[ ! -f /home/runner/bin/docker-compose ]]
         then
-          mkdir /home/runner/bin \
-          curl -L "https://github.com/docker/compose/releases/download/v2.6.0/docker-compose-Linux-x86_64" -o /home/runner/bin/docker-compose \
+          echo "The file docker-compose file does not exist yet!"
+          mkdir /home/runner/bin
+          curl -L "https://github.com/docker/compose/releases/download/v2.6.0/docker-compose-Linux-x86_64" -o /home/runner/bin/docker-compose
           chmod +x /home/runner/bin/docker-compose
         fi

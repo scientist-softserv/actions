@@ -22,6 +22,7 @@ runs:
       run: |
         echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
     - name: Make sure docker-compose is installed
+      shell: bash
       run: |
         [ ! -f /home/runner/bin/docker-compose ] && {
         mkdir /home/runner/bin; 

@@ -72,7 +72,7 @@ jobs:
         run: |
           if [ -d solr ]
           then
-            docker-compose exec -T web bash -c
+            docker-compose exec -T web sh -c
             "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
             SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
             solrcloud-assign-configset.sh"
@@ -81,7 +81,7 @@ jobs:
           fi
       - name: Setup db
         run: >-
-          docker-compose exec -T web bash -c
+          docker-compose exec -T web sh -c
           "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
       - name: Run Specs
         env:
@@ -92,7 +92,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
-          docker-compose exec -T web bash -c
+          docker-compose exec -T web sh -c
           "gem install semaphore_test_boosters &&
           rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
       - name: Publish Test Report

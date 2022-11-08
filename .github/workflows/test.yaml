@@ -8,6 +8,10 @@ on:
       tag:
         required: false
         type: string
+      solr:
+        required: false
+        type: boolean
+        default: true
   workflow_call:
     inputs:
       worker:
@@ -16,6 +20,10 @@ on:
       tag:
         required: false
         type: string
+      solr:
+        required: false
+        type: boolean
+        default: true
 env:
   REGISTRY: ghcr.io
 
@@ -74,6 +82,7 @@ jobs:
           "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
           SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
           solrcloud-assign-configset.sh"
+        if: ${{ inputs.solr }}
       - name: Setup db
         run: >-
           docker-compose exec -T web bash -c

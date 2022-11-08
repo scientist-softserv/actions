@@ -7,7 +7,7 @@ on:
         type: string
       subdir:
         default: '.'
-        type: sting
+        type: string
       tag:
         required: false
         type: string
@@ -27,7 +27,7 @@ on:
         type: string
       subdir:
         default: '.'
-        type: sting
+        type: string
       tag:
         required: false
         type: string

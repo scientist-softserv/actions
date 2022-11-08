@@ -14,7 +14,9 @@ runs:
       shell: bash
       run: >-
         echo "TAG=${HEAD_TAG::8}" >> ${GITHUB_ENV};
-        echo ${HEAD_TAG::8}
+        echo ${HEAD_TAG::8};
+        echo "export DOCKER_CLIENT_TIMEOUT=120";
+        echo "export COMPOSE_HTTP_TIMEOUT=120"
     - name: Downcase repo
       env:
         REPO: "${{ github.repository }}"
@@ -25,7 +27,3 @@ runs:
       uses: KengoTODA/actions-setup-docker-compose@main
       with:
         version: '1.29.2'
-      shell: bash
-      run: >-
-        echo "export DOCKER_CLIENT_TIMEOUT=120"
-        echo "export COMPOSE_HTTP_TIMEOUT=120"

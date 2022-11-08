@@ -86,7 +86,7 @@ jobs:
       - name: Setup db
         run: >-
           docker-compose exec -T web bash -c
-          "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
+          "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,

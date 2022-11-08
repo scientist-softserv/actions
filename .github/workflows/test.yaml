@@ -68,16 +68,21 @@ jobs:
         if: ${{ inputs.worker }}
       - name: Start containers
         run: docker-compose up -d web
-      - name: Setup solr
-        run: >-
-          docker-compose exec -T web sh -c
-          "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
-          SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
-          solrcloud-assign-configset.sh"
+      - name: Check for and setup Solr if needed
+        run: |
+          if [ -d solr ]
+          then
+            docker-compose exec -T web sh -c
+            "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
+            SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
+            solrcloud-assign-configset.sh"
+          else
+            echo "No solr directory found, skipping..."
+          fi
       - name: Setup db
         run: >-
           docker-compose exec -T web sh -c
-          "RAILS_ENV=test bundle exec rake db:schema:load db:migrate"
+          "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,

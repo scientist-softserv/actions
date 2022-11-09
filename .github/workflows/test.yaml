@@ -76,7 +76,9 @@ jobs:
           docker-compose pull worker
         if: ${{ inputs.worker }}
       - name: Start containers
-        run: docker-compose up -d web
+        run: >-
+          cd ${{ inputs.subdir }};
+          docker-compose up -d web
       - name: Check for and setup Solr if needed
         run: |
           cd ${{ inputs.subdir }};

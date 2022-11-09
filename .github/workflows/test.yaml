@@ -72,7 +72,7 @@ jobs:
         run: |
           if [ -d solr ]
           then
-            docker-compose exec -T web sh -c
+            docker-compose exec -T web sh -c \
             "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
             SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
             solrcloud-assign-configset.sh"

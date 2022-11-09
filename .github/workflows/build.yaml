@@ -6,6 +6,7 @@ on:
         default: "linux/amd64,linux/arm64"
         type: string
       solr:
+        description: "Use if you need to build a specific Solr image and push to the registry"
         required: false
         type: boolean
       tag:
@@ -108,4 +109,4 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:latest
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}

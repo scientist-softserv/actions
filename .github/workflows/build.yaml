@@ -67,14 +67,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull from cache to speed up build
         run: >-
-          cd ${{ input.subdir }};
+          cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           TAG=latest docker-compose pull web || true
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ${{ input.subdir }}
+          context: ${{ inputs.subdir }}
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.target }}
           cache-from: |
@@ -85,7 +85,7 @@ jobs:
       - name: Build and push worker
         uses: docker/build-push-action@v3
         with:
-          context: ${{ input.subdir }}
+          context: ${{ inputs.subdir }}
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.workerTarget }}
           cache-from: |

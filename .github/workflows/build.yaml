@@ -108,4 +108,4 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:latest

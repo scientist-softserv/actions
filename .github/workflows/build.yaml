@@ -94,7 +94,7 @@ jobs:
           platforms: ${{ inputs.platforms }}
           target: ${{ inputs.workerTarget }}
           cache-from: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}

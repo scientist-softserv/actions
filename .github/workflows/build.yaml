@@ -1,22 +1,5 @@
 name: "Build Docker Images"
 on:
-  workflow_dispatch:
-    inputs:
-      platforms:
-        default: "linux/amd64,linux/arm64"
-        type: string
-      tag:
-        required: false
-        type: string
-      target:
-        required: false
-        type: string
-      worker:
-        required: false
-        type: boolean
-      workerTarget:
-        required: false
-        type: string
   workflow_call:
     inputs:
       platforms:

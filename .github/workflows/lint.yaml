@@ -1,13 +1,5 @@
 name: "Lint for Rails Projects"
 on:
-  workflow_dispatch:
-    inputs:
-      worker:
-        required: false
-        type: boolean
-      tag:
-        required: false
-        type: string
   workflow_call:
     inputs:
       worker:

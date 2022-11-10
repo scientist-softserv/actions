@@ -8,6 +8,10 @@ on:
       tag:
         required: false
         type: string
+      rspec_cmd:
+        required: false
+        type: string
+        default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
   workflow_call:
     inputs:
       worker:

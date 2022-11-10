@@ -60,6 +60,8 @@ jobs:
           image_name: ${{ inputs.image_name }}
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          submodules: true
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx

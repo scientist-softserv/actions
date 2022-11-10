@@ -26,4 +26,4 @@ runs:
     - name: Install docker-compose
       uses: KengoTODA/actions-setup-docker-compose@main
       with:
-        version: '3.8'
+        version: '2.12.2'

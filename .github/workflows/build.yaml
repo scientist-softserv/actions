@@ -81,25 +81,29 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
+          build-args: |
+            APP_PATH=${{ inputs.subdir }}
+          cache-from: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
           platforms: ${{ inputs.platforms }}
-          target: ${{ inputs.target }}
-          cache-from: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          target: ${{ inputs.target }}
       - name: Build and push worker
         uses: docker/build-push-action@v3
         with:
+          build-args: |
+            APP_PATH=${{ inputs.subdir }}
+          cache-from: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
           platforms: ${{ inputs.platforms }}
-          target: ${{ inputs.workerTarget }}
-          cache-from: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          target: ${{ inputs.workerTarget }}
         if: ${{ inputs.worker }}

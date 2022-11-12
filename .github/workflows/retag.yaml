@@ -1,4 +1,4 @@
-name: "Retag the item on main"
+name: "Retag the image on main to latest"
 on:
   workflow_dispatch:
     inputs:
@@ -8,12 +8,18 @@ on:
       tag:
         required: false
         type: string
+      solr:
+        required: false
+        type: string
   workflow_call:
     inputs:
       worker:
         required: false
         type: boolean
       tag:
+        required: false
+        type: string
+      solr:
         required: false
         type: string
 
@@ -30,27 +36,32 @@ jobs:
         uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
           tag: ${{ inputs.tag }}
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+      - name: Docker Metadata action for web
+        uses: docker/metadata-action@v4.1.1
         with:
-          limit-access-to-actor: true
-      - name: Retag web to latest
-        uses: koraykoska/retag-docker-image@0.2.4
-        with:
-          registry: ${{ env.REGISTRY }}
-          name: ${{ env.REPO_LOWER }}
-          old_tag: ${{ env.TAG }}
-          new_tag: latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Retag worker to latest
-        uses: koraykoska/retag-docker-image@0.2.4
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+          flavor: |
+            latest=auto
+      - name: Docker Metadata action for worker
         if: ${{ inputs.worker }}
+        uses: docker/metadata-action@v4.1.1
         with:
-          registry: ${{ env.REGISTRY }}
-          name: ${{ env.REPO_LOWER }}/worker
-          old_tag: ${{ env.TAG }}
-          new_tag: latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+          flavor: |
+            latest=auto
+      - name: Docker Metadata action for solr
+        if: ${{ inputs.solr }}
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+          flavor: |
+            latest=auto

@@ -17,6 +17,7 @@ on:
         required: false
         type: string
       helm-values-file-name:
+        description: Specify a values file name before the `-deploy.tmpl.yaml`
         required: false
         type: string
 

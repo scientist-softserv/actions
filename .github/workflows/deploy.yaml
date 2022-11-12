@@ -17,10 +17,9 @@ on:
         required: false
         type: string
       helm-values-file-name:
-        description: Specify a values file name before the `-deploy.tmpl.yaml`
+        description: "Specify a values file name before the `-deploy.tmpl.yaml`"
         required: false
         type: string
-
 
 env:
   REGISTRY: ghcr.io
@@ -42,13 +41,22 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       GOOGLE_FONTS_KEY: ${{ secrets.GOOGLE_FONTS_KEY }}
       GOOGLE_OAUTH_PRIVATE_KEY_SECRET: ${{ secrets.GOOGLE_OAUTH_PRIVATE_KEY_SECRET }}
+      HBK_PAPERTRAIL_API_TOKEN: ${{ secrets.HBK_PAPERTRAIL_API_TOKEN }}
+      HBK_SENDGRID_PASSWORD: ${{ secrets.HBK_SENDGRID_PASSWORD }}
+      HBK_STRIPE_SECRET_KEY: ${{ secrets.HBK_STRIPE_SECRET_KEY }}
       IA_PASSWORD: ${{ secrets.IA_PASSWORD }}
+      LJK_SENDGRID_PASSWORD: ${{ secrets.LJK_SENDGRID_PASSWORD }}
+      LJK_SQUARE_ACCESS_TOKEN: ${{ secrets.LJK_SQUARE_ACCESS_TOKEN }}
+      LJK_SQUARE_WEBHOOK_SIGNATURE_KEY: ${{ secrets.LJK_SQUARE_WEBHOOK_SIGNATURE_KEY }}
+      LJK_STRIPE_SECRET_KEY: ${{ secrets.LJK_STRIPE_SECRET_KEY }}
       MAIL_PASS: ${{ secrets.MAIL_PASS }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
       SOLR_ADMIN_PASSWORD: ${{ secrets.SOLR_ADMIN_PASSWORD }}
+      SQUARE_ACCESS_TOKEN: ${{ secrets.SQUARE_ACCESS_TOKEN }}
+      SQUARE_WEBHOOK_SIGNATURE_KEY: ${{ secrets.SQUARE_WEBHOOK_SIGNATURE_KEY }}
     steps:
       - id: setup
         name: Setup
@@ -66,7 +74,7 @@ jobs:
         if: ${{ inputs.solr }}
         run: |
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
-          DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
+          DOLLAR=$ envsubst < ops/${{ inputs.helm-values-file-name || inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.helm-values-file-name || inputs.environment }}-deploy.yaml;
           export DEPLOY_TAG=${TAG};
           export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
           export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;
@@ -75,7 +83,7 @@ jobs:
       - name: Do deploy
         run: |
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
-          DOLLAR=$ envsubst < ops/${{ inputs.helm-values-file-name || inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
+          DOLLAR=$ envsubst < ops/${{ inputs.helm-values-file-name || inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.helm-values-file-name || inputs.environment }}-deploy.yaml;
           export DEPLOY_TAG=${TAG};
           export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
           export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;

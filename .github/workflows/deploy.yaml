@@ -2,6 +2,10 @@ name: "Deploy"
 on:
   workflow_call:
     inputs:
+      helm-values-file-name:
+        description: "Specify a values file name before the '-deploy.tmpl.yaml'"
+        required: false
+        type: string
       k8s-release-name:
         required: false
         type: string
@@ -56,7 +60,7 @@ jobs:
       - name: Do deploy
         run: >-
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
-          DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
+          DOLLAR=$ envsubst < ops/${{ inputs.helm-values-file-name || inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.helm-values-file-name || inputs.environment }}-deploy.yaml;
           export DEPLOY_TAG=${TAG};
           export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
           export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;

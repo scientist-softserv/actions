@@ -65,22 +65,44 @@ jobs:
         uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
           tag: ${{ inputs.tag }}
-      - id: retag
-        name: Retag
-        uses: scientist-softserv/actions/setup-retag@self-hosted-runner
+      - name: Retag action for web
+        uses: docker/metadata-action@v4.1.1
         with:
-          tag: ${{ inputs.tag }}
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
+          tags: |
+            type=raw,value=latest
+            type=sha
+          flavor: |
+            latest=auto
+      - name: Retag action for worker
+        if: ${{ inputs.worker }}
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
+          tags: |
+            type=raw,value=latest
+            type=sha
+          flavor: |
+            latest=auto
+      - name: Retag action for solr
+        if: ${{ inputs.solr }}
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
+          tags: |
+            type=raw,value=latest
+            type=sha
+          flavor: |
+            latest=auto
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull from cache to speed up build
-        run: >-
-          touch .env.development;
-          touch .env;
-          TAG=latest docker-compose pull web || true
       - name: Build and push web
         uses: docker/build-push-action@v3
         with:
@@ -90,9 +112,7 @@ jobs:
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
-            ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
       - name: Build and push worker
         if: ${{ inputs.worker }}
         uses: docker/build-push-action@v3
@@ -103,8 +123,7 @@ jobs:
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          tags: ${{ steps.meta.outputs.tags }}
       - name: Build and push solr
         if: ${{ inputs.solr }}
         uses: docker/build-push-action@v3
@@ -114,5 +133,4 @@ jobs:
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
+          tags: ${{ steps.meta.outputs.tags }}

@@ -64,6 +64,41 @@ jobs:
           touch .env.development;
           touch .env;
           TAG=latest docker-compose pull web || true
+      - name: Retag action for web
+        id: meta-web
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short=
+          flavor: |
+            latest=auto
+      - name: Retag action for worker
+        if: ${{ inputs.worker }}
+        id: meta-worker
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+          flavor: |
+            latest=auto
+      - name: Retag action for solr
+        if: ${{ inputs.solr }}
+        id: meta-solr
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+          flavor: |
+            latest=auto
       - name: Build and push
         uses: docker/build-push-action@v3
         with:

@@ -92,6 +92,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+            ${{ steps.meta.outputs.tags }}
       - name: Build and push worker
         if: ${{ inputs.worker }}
         uses: docker/build-push-action@v3

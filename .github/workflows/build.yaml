@@ -111,7 +111,7 @@ jobs:
           target: ${{ inputs.target }}
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ steps.meta.outputs.tags }}
       - name: Build and push worker
         if: ${{ inputs.worker }}
@@ -122,7 +122,7 @@ jobs:
           target: ${{ inputs.workerTarget }}
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ steps.meta.outputs.tags }}
       - name: Build and push solr
         if: ${{ inputs.solr }}
@@ -132,5 +132,5 @@ jobs:
           platforms: ${{ inputs.platforms }}
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ steps.meta.outputs.tags }}

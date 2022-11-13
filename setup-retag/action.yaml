@@ -29,7 +29,6 @@ env:
 jobs:
   retag:
     runs-on: self-hosted
-    if: ${{ github.ref == format('refs/heads/{0}', 'main') }}
     steps:
       - id: setup
         name: Setup

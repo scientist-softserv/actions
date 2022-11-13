@@ -71,8 +71,8 @@ jobs:
           images: |
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
           tags: |
-            type=raw,value=latest
-            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,value=latest,enable={{is_default_branch}}
           flavor: |
             latest=auto
       - name: Retag action for worker
@@ -82,8 +82,8 @@ jobs:
           images: |
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
           tags: |
-            type=raw,value=latest
-            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,value=latest,enable={{is_default_branch}}
           flavor: |
             latest=auto
       - name: Retag action for solr
@@ -93,8 +93,8 @@ jobs:
           images: |
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
           tags: |
-            type=raw,value=latest
-            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,value=latest,enable={{is_default_branch}}
           flavor: |
             latest=auto
       - name: Login to GitHub Container Registry

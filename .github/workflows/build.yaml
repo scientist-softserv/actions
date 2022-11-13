@@ -72,7 +72,7 @@ jobs:
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,enable=true,priority=100,prefix=,suffix=,format=short=
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
           flavor: |
             latest=auto
       - name: Retag action for worker

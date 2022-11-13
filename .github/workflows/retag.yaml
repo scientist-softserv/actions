@@ -1,0 +1,51 @@
+name: "Retag the item on main"
+on:
+  workflow_dispatch:
+    inputs:
+      worker:
+        required: false
+        type: boolean
+      tag:
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      worker:
+        required: false
+        type: boolean
+      tag:
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  retag:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - id: setup
+        name: Setup
+        uses: scientist-softserv/actions/setup-env@main
+        with:
+          tag: ${{ inputs.tag }}
+      - name: Retag web to latest
+        uses: koraykoska/retag-docker-image@0.2.4
+        with:
+          registry: ${{ env.REGISTRY }}
+          name: ${{ env.REPO_LOWER }}
+          old_tag: ${{ env.TAG }}
+          new_tag: latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Retag worker to latest
+        uses: koraykoska/retag-docker-image@0.2.4
+        with:
+          registry: ${{ env.REGISTRY }}
+          name: ${{ env.REPO_LOWER }}/worker
+          old_tag: ${{ env.TAG }}
+          new_tag: latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ inputs.worker }}

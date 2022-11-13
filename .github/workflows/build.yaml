@@ -49,6 +49,11 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+      - id: setup
+        name: Setup
+        uses: scientist-softserv/actions/setup-env@main
+        with:
+          tag: ${{ inputs.tag }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Set up QEMU

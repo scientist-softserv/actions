@@ -11,6 +11,10 @@ on:
       subdir:
         default: '.'
         type: string
+      solr:
+        description: "Use if you need to build a specific Solr image and push to the registry"
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
@@ -34,6 +38,10 @@ on:
       subdir:
         default: '.'
         type: string
+      solr:
+        description: "Use if you need to build a specific Solr image and push to the registry"
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
@@ -80,6 +88,41 @@ jobs:
           touch .env.development;
           touch .env;
           TAG=latest docker-compose pull web || true
+      - name: Retag action for web
+        id: meta-web
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+          flavor: |
+            latest=auto
+      - name: Retag action for worker
+        if: ${{ inputs.worker }}
+        id: meta-worker
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+          flavor: |
+            latest=auto
+      - name: Retag action for solr
+        if: ${{ inputs.solr }}
+        id: meta-solr
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: |
+            name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+          flavor: |
+            latest=auto
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
@@ -95,6 +138,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           target: ${{ inputs.target }}
       - name: Build and push worker
+        if: ${{ inputs.worker }}
         uses: docker/build-push-action@v3
         with:
           build-args: |
@@ -108,4 +152,13 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           target: ${{ inputs.workerTarget }}
-        if: ${{ inputs.worker }}
+      - name: Build and push solr
+        if: ${{ inputs.solr }}
+        uses: docker/build-push-action@v3
+        with:
+          context: solr
+          platforms: ${{ inputs.platforms }}
+          cache-from: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
+          push: true
+          tags: ${{ steps.meta-solr.outputs.tags }}

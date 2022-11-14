@@ -100,8 +100,8 @@ jobs:
       - name: Build and push web
         uses: docker/build-push-action@v3
         with:
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:latest
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:latest,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:buildcache,mode=max
           context: .
           platforms: ${{ inputs.platforms }}
           push: true
@@ -113,8 +113,8 @@ jobs:
         if: ${{ inputs.worker }}
         uses: docker/build-push-action@v3
         with:
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:latest
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:latest,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:buildcache,mode=max
           context: .
           platforms: ${{ inputs.platforms }}
           push: true
@@ -126,8 +126,8 @@ jobs:
         if: ${{ inputs.solr }}
         uses: docker/build-push-action@v3
         with:
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:latest
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:latest,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:buildcache,mode=max
           context: .
           platforms: ${{ inputs.platforms }}
           push: true

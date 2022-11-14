@@ -4,6 +4,9 @@ inputs:
   tag:
     required: false
     type: string
+  image_name:
+    required: false
+    type: string
 
 runs:
   using: "composite"
@@ -19,5 +22,5 @@ runs:
       run: |
         echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
       env:
-        REPO: "${{ github.repository }}"
+        REPO: "${{ inputs.image_name || github.repository }}"
       shell: bash

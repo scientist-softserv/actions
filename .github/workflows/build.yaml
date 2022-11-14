@@ -5,6 +5,10 @@ on:
       platforms:
         default: "linux/amd64,linux/arm64"
         type: string
+      solr:
+        description: "Use if you need to build a specific Solr image and push to the registry"
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
@@ -22,6 +26,10 @@ on:
       platforms:
         default: "linux/amd64,linux/arm64"
         type: string
+      solr:
+        description: "Use if you need to build a specific Solr image and push to the registry"
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
@@ -111,6 +119,7 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
       - name: Build and push worker
+        if: ${{ inputs.worker }}
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -121,4 +130,13 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
-        if: ${{ inputs.worker }}
+      - name: Build and push solr
+        if: ${{ inputs.solr }}
+        uses: docker/build-push-action@v3
+        with:
+          context: solr
+          platforms: ${{ inputs.platforms }}
+          cache-from: |
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
+          push: true
+          tags: ${{ steps.meta-solr.outputs.tags }}

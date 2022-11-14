@@ -8,6 +8,10 @@ on:
       k8s-namespace:
         required: false
         type: string
+      solr:
+        description: "Add if your solr image is from the registry"
+        required: false
+        type: boolean
       tag:
         description: "Tag to override default of current branch sha"
         required: false
@@ -60,4 +64,14 @@ jobs:
           export DEPLOY_TAG=${TAG};
           export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
           export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;
+          ./bin/helm_deploy ${{ inputs.k8s-release-name || format('{0}-{1}', github.event.repository.name, inputs.environment) }} ${{ inputs.k8s-namespace || format('{0}-{1}', github.event.repository.name, inputs.environment) }}
+      - name: Do deploy with solr registry image
+        if: ${{ inputs.solr }}
+        run: |
+          echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
+          DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
+          export DEPLOY_TAG=${TAG};
+          export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
+          export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;
+          export SOLR_IMAGE=ghcr.io/${REPO_LOWER}/solr;
           ./bin/helm_deploy ${{ inputs.k8s-release-name || format('{0}-{1}', github.event.repository.name, inputs.environment) }} ${{ inputs.k8s-namespace || format('{0}-{1}', github.event.repository.name, inputs.environment) }}

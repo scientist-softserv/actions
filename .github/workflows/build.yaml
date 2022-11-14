@@ -106,8 +106,8 @@ jobs:
           platforms: ${{ inputs.platforms }}
           push: true
           tags: |
-          ${{ steps.meta-web.outputs.tags }};
-          ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+            ${{ steps.meta-web.outputs.tags }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           target: ${{ inputs.target }}
       - name: Build and push worker
         if: ${{ inputs.worker }}
@@ -119,7 +119,7 @@ jobs:
           platforms: ${{ inputs.platforms }}
           push: true
           tags: |
-            ${{ steps.meta-worker.outputs.tags }};
+            ${{ steps.meta-worker.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           target: ${{ inputs.target }}
       - name: Build and push solr
@@ -132,6 +132,6 @@ jobs:
           platforms: ${{ inputs.platforms }}
           push: true
           tags: |
-            ${{ steps.meta-solr.outputs.tags }};
+            ${{ steps.meta-solr.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
           target: ${{ inputs.target }}

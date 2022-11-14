@@ -65,11 +65,11 @@ jobs:
         with:
           version: latest
           endpoint: builders
-      - name: Pull from cache to speed up build
-        run: >-
-          touch .env.development;
-          touch .env;
-          TAG=latest docker-compose pull web || true
+      # - name: Pull from cache to speed up build
+      #   run: >-
+      #     touch .env.development;
+      #     touch .env;
+      #     TAG=latest docker-compose pull web || true
       - name: Retag action for web
         id: meta-web
         uses: docker/metadata-action@v4.1.1
@@ -78,7 +78,7 @@ jobs:
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,enable=true,priority=100,prefix=,suffix=,format=short=
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
           flavor: |
             latest=auto
       - name: Retag action for worker

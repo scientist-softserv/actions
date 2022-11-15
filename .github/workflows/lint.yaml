@@ -28,11 +28,11 @@ env:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code
@@ -47,7 +47,6 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
-          touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
         run: >-

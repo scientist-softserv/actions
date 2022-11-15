@@ -36,7 +36,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -56,7 +56,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code
@@ -79,21 +79,22 @@ jobs:
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
+        if: ${{ inputs.worker }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull worker
-        if: ${{ inputs.worker }}
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose up -d web
       - name: Check for and setup Solr if needed
+        shell: bash
         run: |
           cd ${{ inputs.subdir }};
           if [ -d solr ]
           then
             docker-compose exec -T web sh -c \
-            "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
+            "solrcloud-upload-configset.sh "/app/samvera/hyrax-webapp/solr/config" &&
             SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
             solrcloud-assign-configset.sh"
           else

@@ -55,7 +55,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@self-hosted-runner
+        uses: scientist-softserv/actions/setup-env@main
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}

@@ -77,7 +77,7 @@ jobs:
       - name: Set up Docker Context for Buildx
         run: docker context create builders
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v1
         with:
           version: latest
           endpoint: builders

@@ -2,6 +2,9 @@ name: "Deploy"
 on:
   workflow_call:
     inputs:
+      image_name:
+        type: string
+        description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
       k8s-release-name:
         required: false
         type: string
@@ -55,6 +58,7 @@ jobs:
         uses: scientist-softserv/actions/setup-env@self-hosted-runner
         with:
           tag: ${{ inputs.tag }}
+          image_name: ${{ inputs.image_name }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup tmate session

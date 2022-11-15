@@ -154,4 +154,6 @@ jobs:
           cache-from: |
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
           push: true
-          tags: ${{ steps.meta-solr.outputs.tags }}
+          tags: |
+            ${{ steps.meta-solr.outputs.tags }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}

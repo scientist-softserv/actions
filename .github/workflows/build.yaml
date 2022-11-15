@@ -96,9 +96,6 @@ jobs:
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
-          flavor: |
-            latest=auto
       - name: Retag action for worker
         if: ${{ inputs.worker }}
         id: meta-worker
@@ -108,9 +105,6 @@ jobs:
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
-          flavor: |
-            latest=auto
       - name: Retag action for solr
         if: ${{ inputs.solr }}
         id: meta-solr
@@ -120,10 +114,7 @@ jobs:
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
-          flavor: |
-            latest=auto
-      - name: Build and push
+      - name: Build and push web
         uses: docker/build-push-action@v3
         with:
           build-args: |
@@ -135,6 +126,7 @@ jobs:
           platforms: ${{ inputs.platforms }}
           push: true
           tags: |
+            ${{ steps.meta-web.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           target: ${{ inputs.target }}
       - name: Build and push worker
@@ -150,6 +142,7 @@ jobs:
           platforms: ${{ inputs.platforms }}
           push: true
           tags: |
+            ${{ steps.meta-worker.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           target: ${{ inputs.workerTarget }}
       - name: Build and push solr

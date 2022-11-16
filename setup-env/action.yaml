@@ -30,8 +30,3 @@ runs:
       uses: KengoTODA/actions-setup-docker-compose@main
       with:
         version: '2.12.2'
-    - name: Confirm env exists
-      shell: bash
-      run: >-
-        touch .env;
-        touch .env.development

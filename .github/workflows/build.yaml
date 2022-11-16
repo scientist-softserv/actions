@@ -86,7 +86,7 @@ jobs:
         uses: baschny/append-buildx-action@v1
         with:
           builder: ${{ steps.builder.outputs.name }}
-          endpoint: "tcp://35.90.131.78:2375"
+          endpoint: "tcp://10.0.5.114:2375"
       - name: Pull from cache to speed up build
         run: >-
           cd ${{ inputs.subdir }};

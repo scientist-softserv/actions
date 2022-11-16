@@ -47,6 +47,7 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
+          touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
         run: >-

@@ -78,9 +78,16 @@ jobs:
         run: docker context create builders
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        id: builder
         with:
           version: latest
           endpoint: builders
+      - name: Append ARM buildx builder
+        uses: baschny/append-buildx-action@v1
+        with:
+          builder: ${{ steps.builder.outputs.name }}
+          endpoint: "ssh://ec2-user@10.0.5.114"
+          ssh_private_key: ${{ secrets.SSH_BESTIE_BUILDER_PRIVATE_KEY }}
       - name: Pull from cache to speed up build
         run: >-
           cd ${{ inputs.subdir }};

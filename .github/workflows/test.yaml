@@ -2,6 +2,10 @@ name: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
     inputs:
+      confdir:
+        required: false
+        type: string
+        default: "/app/samvera/hyrax-webapp/solr/config"
       subdir:
         default: '.'
         type: string
@@ -12,6 +16,10 @@ on:
         required: false
         type: string
         default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+      confdir:
+        required: false
+        type: string
+        default: "/app/samvera/hyrax-webapp/solr/config"
       worker:
         required: false
         type: boolean
@@ -49,7 +57,7 @@ jobs:
         ci_node_index: [0, 1, 2]
     env:
       ALLOW_ANONYMOUS_LOGIN: "yes"
-      CONFDIR: "/app/samvera/hyrax-webapp/solr/config"
+      CONFDIR: ${{ inputs.confdir }}
       DB_CLEANER_ALLOW_REMOTE_DB_URL: "true"
       TB_RSPEC_FORMATTER: progress
       TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml
@@ -94,7 +102,7 @@ jobs:
           if [ -d solr ]
           then
             docker-compose exec -T web sh -c \
-            "solrcloud-upload-configset.sh "/app/samvera/hyrax-webapp/solr/config" &&
+            "solrcloud-upload-configset.sh "${CONFDIR}" &&
             SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
             solrcloud-assign-configset.sh"
           else

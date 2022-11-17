@@ -2,12 +2,19 @@ name: "Deploy"
 on:
   workflow_call:
     inputs:
+      image_name:
+        type: string
+        description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
       k8s-release-name:
         required: false
         type: string
       k8s-namespace:
         required: false
         type: string
+      solr:
+        description: "Add if your solr image is from the registry"
+        required: false
+        type: boolean
       tag:
         description: "Tag to override default of current branch sha"
         required: false
@@ -17,8 +24,8 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  deployment:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
     container: dtzar/helm-kubectl:3.9.4
     environment: ${{ inputs.environment }}
     env:
@@ -35,17 +42,23 @@ jobs:
       GOOGLE_OAUTH_PRIVATE_KEY_SECRET: ${{ secrets.GOOGLE_OAUTH_PRIVATE_KEY_SECRET }}
       IA_PASSWORD: ${{ secrets.IA_PASSWORD }}
       MAIL_PASS: ${{ secrets.MAIL_PASS }}
+      PAPERTRAIL_API_TOKEN: ${{ secrets.PAPERTRAIL_API_TOKEN }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+      SENDGRID_PASSWORD: ${{ secrets.SENDGRID_PASSWORD }}
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
       SOLR_ADMIN_PASSWORD: ${{ secrets.SOLR_ADMIN_PASSWORD }}
+      SQUARE_ACCESS_TOKEN: ${{ secrets.SQUARE_ACCESS_TOKEN }}
+      SQUARE_WEBHOOK_SIGNATURE_KEY: ${{ secrets.SQUARE_WEBHOOK_SIGNATURE_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
     steps:
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@main
         with:
           tag: ${{ inputs.tag }}
+          image_name: ${{ inputs.image_name }}
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup tmate session
@@ -53,8 +66,18 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
+      - name: Do deploy with solr registry image
+        if: ${{ inputs.solr }}
+        run: |
+          echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
+          DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
+          export DEPLOY_TAG=${TAG};
+          export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
+          export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;
+          export SOLR_IMAGE=ghcr.io/${REPO_LOWER}/solr;
+          ./bin/helm_deploy ${{ inputs.k8s-release-name || format('{0}-{1}', github.event.repository.name, inputs.environment) }} ${{ inputs.k8s-namespace || format('{0}-{1}', github.event.repository.name, inputs.environment) }}
       - name: Do deploy
-        run: >-
+        run: |
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
           export DEPLOY_TAG=${TAG};

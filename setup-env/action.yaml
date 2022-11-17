@@ -4,20 +4,29 @@ inputs:
   tag:
     required: false
     type: string
+  image_name:
+    required: false
+    type: string
 
 runs:
   using: "composite"
   steps:
     - name: Set env
-      run: >-
-        echo "TAG=${HEAD_TAG::8}" >> ${GITHUB_ENV};
-        echo ${HEAD_TAG::8}
       env:
         HEAD_TAG: ${{ inputs.tag || github.event.pull_request.head.sha || github.sha }}
       shell: bash
+      run: >-
+        echo "TAG=${HEAD_TAG::8}" >> ${GITHUB_ENV};
+        echo ${HEAD_TAG::8};
+        echo "export DOCKER_CLIENT_TIMEOUT=360";
+        echo "export COMPOSE_HTTP_TIMEOUT=360"
     - name: Downcase repo
+      env:
+        REPO: "${{ inputs.image_name || github.repository }}"
+      shell: bash
       run: |
         echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
-      env:
-        REPO: "${{ github.repository }}"
-      shell: bash
+    - name: Install docker-compose
+      uses: KengoTODA/actions-setup-docker-compose@main
+      with:
+        version: '2.12.2'

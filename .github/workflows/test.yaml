@@ -16,15 +16,15 @@ on:
         required: false
         type: string
         default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
-      confdir:
-        required: false
-        type: string
-        default: "/app/samvera/hyrax-webapp/solr/config"
       worker:
         required: false
         type: boolean
   workflow_call:
     inputs:
+      confdir:
+        required: false
+        type: string
+        default: "/app/samvera/hyrax-webapp/solr/config"
       subdir:
         default: '.'
         type: string

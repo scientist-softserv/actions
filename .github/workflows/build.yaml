@@ -86,7 +86,7 @@ jobs:
         uses: baschny/append-buildx-action@v1
         with:
           builder: ${{ steps.builder.outputs.name }}
-          endpoint: "ssh://ec2-user@10.0.5.114"
+          endpoint: "ssh://ec2-user@10.0.6.48"
           ssh_private_key: ${{ secrets.SSH_BESTIE_BUILDER_PRIVATE_KEY }}
       - name: Pull from cache to speed up build
         run: >-

@@ -100,7 +100,8 @@ jobs:
         shell: bash
         run: |
           cd ${{ inputs.subdir }};
-          if [ -d solr ]
+          solrcloud_path=$(which solrcloud-upload-configset.sh)
+          if [[ -d solr && -x "$solrcloud_path" ]]
           then
             docker-compose exec -T web sh -c \
             "solrcloud-upload-configset.sh "${CONFDIR}" &&

@@ -97,7 +97,7 @@ jobs:
           chmod 777 db/schema.rb;
           docker-compose up -d web
       - name: Check for and setup Solr if needed
-        shell: bash
+        shell: sh
         run: |
           cd ${{ inputs.subdir }};
           solrcloud_path=$(which solrcloud-upload-configset.sh)

@@ -137,6 +137,7 @@ jobs:
             APP_PATH=${{ inputs.subdir }}
             APP_NAME=${{ inputs.app_name }}
             BRANCH=${{ env.TAG }}
+            DEPLOY_KEY=${{ secrets.DEPLOY_KEY }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
@@ -154,6 +155,7 @@ jobs:
             APP_PATH=${{ inputs.subdir }}
             APP_NAME=${{ inputs.app_name }}
             BRANCH=${{ env.TAG }}
+            DEPLOY_KEY=${{ secrets.DEPLOY_KEY }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           context: .
           file: ${{ inputs.subdir}}/Dockerfile

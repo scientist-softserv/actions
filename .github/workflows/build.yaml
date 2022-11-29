@@ -2,6 +2,8 @@ name: "Build Docker Images"
 on:
   workflow_dispatch:
     inputs:
+      app_name:
+        type: string
       image_name:
         type: string
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
@@ -29,6 +31,8 @@ on:
         type: string
   workflow_call:
     inputs:
+      app_name:
+        type: string
       image_name:
         type: string
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
@@ -131,6 +135,8 @@ jobs:
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
+            APP_NAME=${{ inputs.app_name }}
+            BRANCH=${{ env.TAG }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
@@ -146,6 +152,8 @@ jobs:
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
+            APP_NAME=${{ inputs.app_name }}
+            BRANCH=${{ env.TAG }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           context: .
           file: ${{ inputs.subdir}}/Dockerfile

@@ -7,6 +7,9 @@ on:
       image_name:
         type: string
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
+      image_registry:
+        type: string
+        description: "Docker image registry part. Defaults to ghcr.io"
       platforms:
         default: "linux/amd64,linux/arm64"
         type: string
@@ -36,6 +39,9 @@ on:
       image_name:
         type: string
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
+      image_registry:
+        type: string
+        description: "Docker image registry part. Defaults to ghcr.io"
       platforms:
         default: "linux/amd64,linux/arm64"
         type: string
@@ -60,7 +66,7 @@ on:
         type: string
 
 env:
-  REGISTRY: ghcr.io
+  REGISTRY: ${{ input.image_registry || 'ghcr.io' }}
 
 jobs:
   build:

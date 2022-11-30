@@ -66,7 +66,7 @@ on:
         type: string
 
 env:
-  REGISTRY: ${{ input.image_registry || 'ghcr.io' }}
+  REGISTRY: ${{ inputs.image_registry || 'ghcr.io' }}
 
 jobs:
   build:

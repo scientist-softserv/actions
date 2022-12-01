@@ -44,7 +44,7 @@ env:
 
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: ubuntu
     strategy:
       fail-fast: false
       matrix:

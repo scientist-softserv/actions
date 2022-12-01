@@ -25,7 +25,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu
     container: dtzar/helm-kubectl:3.9.4
     environment: ${{ inputs.environment }}
     env:

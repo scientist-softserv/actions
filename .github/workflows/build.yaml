@@ -60,7 +60,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - id: setup
         name: Setup

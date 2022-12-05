@@ -79,12 +79,6 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - name: Pull from cache to speed up build
-        run: >-
-          cd ${{ inputs.subdir }};
-          touch .env.development;
-          touch .env;
-          TAG=latest docker-compose pull web || true
       - name: Retag action for web
         id: meta-web
         uses: docker/metadata-action@v4.1.1
@@ -122,7 +116,8 @@ jobs:
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
           platforms: ${{ inputs.platforms }}
@@ -137,7 +132,8 @@ jobs:
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
           platforms: ${{ inputs.platforms }}
@@ -150,7 +146,8 @@ jobs:
         if: ${{ inputs.solr }}
         uses: docker/build-push-action@v3
         with:
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           context: .
           platforms: ${{ inputs.platforms }}
           push: true

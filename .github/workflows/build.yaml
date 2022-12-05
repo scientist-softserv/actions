@@ -74,14 +74,8 @@ jobs:
           submodules: true
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Context for Buildx
-        run: docker context create builders
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-        id: builder
-        with:
-          version: latest
-          endpoint: builders
       - name: Pull from cache to speed up build
         run: >-
           cd ${{ inputs.subdir }};

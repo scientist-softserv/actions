@@ -41,6 +41,8 @@ jobs:
         uses: scientist-softserv/actions/setup-env@arm-wrestle
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2

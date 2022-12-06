@@ -21,10 +21,8 @@ runs:
         echo "export DOCKER_CLIENT_TIMEOUT=360";
         echo "export COMPOSE_HTTP_TIMEOUT=360"
     - name: Sanitize repo slug
-      env:
-        REPO: "${{ inputs.image_name || github.repository }}"
       uses: actions/github-script@v6
       id: repo_slug
       with:
         result-encoding: string
-        script: return 'ghcr.io/${{ REPO }}'.toLowerCase()
+        script: return 'ghcr.io/${{ inputs.image_name || github.repository }}'.toLowerCase()

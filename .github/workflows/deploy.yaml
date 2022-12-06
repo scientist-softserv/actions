@@ -22,6 +22,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  REPO: ${{ steps.repo_slug.outputs.result }}
 
 jobs:
   deploy:
@@ -55,7 +56,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@arm-wrestle
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}
@@ -72,15 +73,15 @@ jobs:
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
           export DEPLOY_TAG=${TAG};
-          export DEPLOY_IMAGE=ghcr.io/${REPO};
-          export WORKER_IMAGE=ghcr.io/${REPO}/worker;
-          export SOLR_IMAGE=ghcr.io/${REPO}/solr;
+          export DEPLOY_IMAGE=${REGISTRY}/${REPO};
+          export WORKER_IMAGE=${REGISTRY}/${REPO}/worker;
+          export SOLR_IMAGE=${REGISTRY}/${REPO}/solr;
           ./bin/helm_deploy ${{ inputs.k8s-release-name || format('{0}-{1}', github.event.repository.name, inputs.environment) }} ${{ inputs.k8s-namespace || format('{0}-{1}', github.event.repository.name, inputs.environment) }}
       - name: Do deploy
         run: |
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
           export DEPLOY_TAG=${TAG};
-          export DEPLOY_IMAGE=ghcr.io/${REPO};
-          export WORKER_IMAGE=ghcr.io/${REPO}/worker;
+          export DEPLOY_IMAGE=${REGISTRY}/${REPO};
+          export WORKER_IMAGE=${REGISTRY}/${REPO}/worker;
           ./bin/helm_deploy ${{ inputs.k8s-release-name || format('{0}-{1}', github.event.repository.name, inputs.environment) }} ${{ inputs.k8s-namespace || format('{0}-{1}', github.event.repository.name, inputs.environment) }}

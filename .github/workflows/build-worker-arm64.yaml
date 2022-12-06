@@ -64,12 +64,12 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: |
             type=registry
-            ref=${{ steps.repo_slug.outputs.result }}/worker:${{ env.TAG }}
+            ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           context: .
           labels: ${{ steps.meta-worker.outputs.labels }}
           platforms: linux/arm64
           push: true
           tags: |
             ${{ steps.meta-worker.outputs.tags }}
-            ${{ steps.repo_slug.outputs.result }}/worker:${{ env.TAG }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           target: ${{ inputs.target }}

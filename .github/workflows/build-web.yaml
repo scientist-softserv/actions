@@ -48,7 +48,7 @@ jobs:
         id: meta-web
         uses: docker/metadata-action@v4.1.1
         with:
-          images: ${{ env.REGISTRY }}/${{ env.REPO }}
+          images: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           tags: |
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
@@ -64,12 +64,12 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: |
             type=registry
-            ref=${{ steps.repo_slug.outputs.result }}:${{ env.TAG }}
+            ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           context: .
           labels: ${{ steps.meta-web.outputs.labels }}
           platforms: linux/amd64
           push: true
           tags: |
             ${{ steps.meta-web.outputs.tags }}
-            ${{ steps.repo_slug.outputs.result }}:${{ env.TAG }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           target: ${{ inputs.target }}

@@ -62,12 +62,12 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
-          cache-from: type=registry,ref=${{ steps.repo_slug.outputs.result }}:${{ env.TAG }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           context: .
           labels: ${{ steps.meta-web.outputs.labels }}
           platforms: linux/arm64
           push: true
           tags: |
             ${{ steps.meta-web.outputs.tags }}
-            ${{ steps.repo_slug.outputs.result }}:${{ env.TAG }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           target: ${{ inputs.target }}

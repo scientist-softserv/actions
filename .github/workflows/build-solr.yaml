@@ -62,12 +62,12 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
-          cache-from: type=registry,ref=${{ steps.repo_slug.outputs.result }}/solr:${{ env.TAG }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
           context: .
           labels: ${{ steps.meta-solr.outputs.labels }}
           platforms: linux/amd64
           push: true
           tags: |
             ${{ steps.meta-solr.outputs.tags }}
-            ${{ steps.repo_slug.outputs.result }}/solr:${{ env.TAG }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
           target: ${{ inputs.target }}

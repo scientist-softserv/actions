@@ -20,13 +20,11 @@ runs:
         echo ${HEAD_TAG::8};
         echo "export DOCKER_CLIENT_TIMEOUT=360";
         echo "export COMPOSE_HTTP_TIMEOUT=360"
-    - name: Downcase repo
+    - name: Sanitize repo slug
       env:
         REPO: "${{ inputs.image_name || github.repository }}"
-      shell: bash
-      run: |
-        echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
-    - name: Install docker-compose
-      uses: KengoTODA/actions-setup-docker-compose@main
+      uses: actions/github-script@v6
+      id: repo_slug
       with:
-        version: '2.12.2'
+        result-encoding: string
+        script: return 'ghcr.io/${{ REPO }}'.toLowerCase()

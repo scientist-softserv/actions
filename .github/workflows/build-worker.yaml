@@ -14,9 +14,6 @@ on:
       target:
         required: false
         type: string
-      workerTarget:
-        required: false
-        type: string
   workflow_call:
     inputs:
       image_name:
@@ -31,9 +28,6 @@ on:
       target:
         required: false
         type: string
-      workerTarget:
-        required: false
-        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -44,7 +38,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@arm-wrestle
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
@@ -54,11 +48,10 @@ jobs:
         id: meta-worker
         uses: docker/metadata-action@v4.1.1
         with:
-          images: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
+          images: ${{ env.REGISTRY }}/${{ env.REPO }}/worker
           tags: |
-            type=raw
-            value=latest
-            enable={{is_default_branch}}
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -71,12 +64,12 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: |
             type=registry
-            ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+            ref=${{ steps.repo_slug.outputs.result }}/worker:${{ env.TAG }}
           context: .
           labels: ${{ steps.meta-worker.outputs.labels }}
           platforms: linux/amd64
           push: true
           tags: |
             ${{ steps.meta-worker.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
-          target: hyku-worker
+            ${{ steps.repo_slug.outputs.result }}/worker:${{ env.TAG }}
+          target: ${{ inputs.target }}

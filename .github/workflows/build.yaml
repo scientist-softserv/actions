@@ -101,6 +101,7 @@ jobs:
           images: |
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
           tags: |
+            # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for worker
         if: ${{ inputs.worker }}
@@ -110,6 +111,7 @@ jobs:
           images: |
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker
           tags: |
+            # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for solr
         if: ${{ inputs.solr }}
@@ -119,6 +121,7 @@ jobs:
           images: |
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
           tags: |
+            # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -138,7 +141,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta-web.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+            ${{ steps.repo_slug.outputs.result }}:${{ env.TAG }}
           target: ${{ inputs.target }}
       - name: Build and push worker
         if: ${{ inputs.worker }}

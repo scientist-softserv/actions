@@ -26,3 +26,9 @@ runs:
       with:
         result-encoding: string
         script: return 'ghcr.io/${{ inputs.image_name || github.repository }}'.toLowerCase()
+    - name: Downcase repo
+      env:
+        REPO: "${{ steps.repo_slug.outputs.result }}"
+      shell: bash
+      run: |
+        echo "${REPO}" >> ${GITHUB_ENV}

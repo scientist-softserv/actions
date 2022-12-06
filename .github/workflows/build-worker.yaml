@@ -31,7 +31,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REPO: ${{ steps.repo_slug.outputs.result }}
 
 jobs:
   build-worker:

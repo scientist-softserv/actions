@@ -52,6 +52,7 @@ jobs:
       - name: Pull worker image to prevent build
         run: >-
           cd ${{ inputs.subdir }};
+          chmod 777 db/schema.rb;
           docker-compose pull worker
         if: ${{ inputs.worker }}
       - name: Run Rubocop

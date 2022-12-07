@@ -1,0 +1,75 @@
+name: "Build Docker Images"
+on:
+  workflow_dispatch:
+    inputs:
+      image_name:
+        type: string
+        description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
+      subdir:
+        default: '.'
+        type: string
+      tag:
+        required: false
+        type: string
+      target:
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      image_name:
+        type: string
+        description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
+      subdir:
+        default: '.'
+        type: string
+      tag:
+        required: false
+        type: string
+      target:
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-web-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - id: setup
+        name: Setup
+        uses: scientist-softserv/actions/setup-env@arm-wrestle
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Retag action for web
+        id: meta-web
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}
+          tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push web
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          context: .
+          labels: ${{ steps.meta-web.outputs.labels }}
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ steps.meta-web.outputs.tags }}
+            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          target: ${{ inputs.target }}

@@ -4,6 +4,9 @@ inputs:
   tag:
     required: false
     type: string
+  image_name:
+    required: false
+    type: string
 
 runs:
   using: "composite"
@@ -16,8 +19,9 @@ runs:
         HEAD_TAG: ${{ inputs.tag || github.event.pull_request.head.sha || github.sha }}
       shell: bash
     - name: Downcase repo
+      env:
+        REPO: "${{ inputs.image_name || github.repository }}"
+      shell: bash
       run: |
         echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
-      env:
-        REPO: "${{ github.repository }}"
       shell: bash

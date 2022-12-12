@@ -2,20 +2,26 @@ name: "Lint for Rails Projects"
 on:
   workflow_dispatch:
     inputs:
-      worker:
-        required: false
-        type: boolean
+      subdir:
+        default: '.'
+        type: string
       tag:
         required: false
         type: string
+      worker:
+        required: false
+        type: boolean
   workflow_call:
     inputs:
-      worker:
-        required: false
-        type: boolean
+      subdir:
+        default: '.'
+        type: string
       tag:
         required: false
         type: string
+      worker:
+        required: false
+        type: boolean
 
 env:
   REGISTRY: ghcr.io
@@ -26,7 +32,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@v3plus5
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code
@@ -39,15 +45,20 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull image to prevent build
         run: >-
+          cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
         run: >-
+          cd ${{ inputs.subdir }};
           docker-compose pull worker
         if: ${{ inputs.worker }}
       - name: Run Rubocop
-        run: docker-compose run web bundle exec rubocop --parallel --format progress
+        run: >-
+          cd ${{ inputs.subdir }};
+          chmod 777 db/schema.rb;
+          docker-compose run web bundle exec rubocop --parallel --format progress
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

@@ -2,9 +2,13 @@ name: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
     inputs:
-      worker:
+      confdir:
         required: false
-        type: boolean
+        type: string
+        default: "/app/samvera/hyrax-webapp/solr/config"
+      subdir:
+        default: '.'
+        type: string
       tag:
         required: false
         type: string
@@ -12,11 +16,18 @@ on:
         required: false
         type: string
         default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+      worker:
+        required: false
+        type: boolean
   workflow_call:
     inputs:
-      worker:
+      confdir:
         required: false
-        type: boolean
+        type: string
+        default: "/app/samvera/hyrax-webapp/solr/config"
+      subdir:
+        default: '.'
+        type: string
       tag:
         required: false
         type: string
@@ -24,6 +35,10 @@ on:
         required: false
         type: string
         default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+      worker:
+        required: false
+        type: boolean
+
 env:
   REGISTRY: ghcr.io
 
@@ -42,14 +57,14 @@ jobs:
         ci_node_index: [0, 1, 2]
     env:
       ALLOW_ANONYMOUS_LOGIN: "yes"
-      CONFDIR: "/app/samvera/hyrax-webapp/solr/config"
+      CONFDIR: ${{ inputs.confdir }}
       DB_CLEANER_ALLOW_REMOTE_DB_URL: "true"
       TB_RSPEC_FORMATTER: progress
       TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@main
+        uses: scientist-softserv/actions/setup-env@v3plus5
         with:
           tag: ${{ inputs.tag }}
       - name: Checkout code
@@ -67,21 +82,28 @@ jobs:
           limit-access-to-actor: true
       - name: Pull image to prevent build
         run: >-
+          cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
-        run: >-
-          docker-compose pull worker
         if: ${{ inputs.worker }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          docker-compose pull worker
       - name: Start containers
-        run: docker-compose up -d web
+        run: >-
+          cd ${{ inputs.subdir }};
+          chmod 777 db/schema.rb;
+          docker-compose up -d web
       - name: Check for and setup Solr if needed
+        shell: bash
         run: |
+          cd ${{ inputs.subdir }};
           if [ -d solr ]
           then
             docker-compose exec -T web sh -c \
-            "solrcloud-upload-configset.sh /app/samvera/hyrax-webapp/solr/config &&
+            "solrcloud-upload-configset.sh "${CONFDIR}" &&
             SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh &&
             solrcloud-assign-configset.sh"
           else
@@ -89,6 +111,7 @@ jobs:
           fi
       - name: Setup db
         run: >-
+          cd ${{ inputs.subdir }};
           docker-compose exec -T web sh -c
           "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
       - name: Run Specs
@@ -100,6 +123,7 @@ jobs:
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         continue-on-error: true
         run: >-
+          cd ${{ inputs.subdir }};
           docker-compose exec -T web sh -c
           "${{ inputs.rspec_cmd }}"
       - name: Publish Test Report

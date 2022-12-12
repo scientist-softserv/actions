@@ -21,7 +21,6 @@ runs:
     - name: Downcase repo
       env:
         REPO: "${{ inputs.image_name || github.repository }}"
-      shell: bash
       run: |
         echo "REPO_LOWER=${REPO,,}" >> ${GITHUB_ENV}
       shell: bash

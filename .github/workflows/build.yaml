@@ -18,7 +18,7 @@ on:
       submodules:
         description: "Use if you need to build a submodule"
         default: false
-        type: bolean
+        type: boolean
       tag:
         required: false
         type: string
@@ -45,6 +45,10 @@ on:
       solr:
         description: "Use if you need to build a specific Solr image and push to the registry"
         required: false
+        type: boolean
+      submodules:
+        description: "Use if you need to build a submodule"
+        default: false
         type: boolean
       tag:
         required: false

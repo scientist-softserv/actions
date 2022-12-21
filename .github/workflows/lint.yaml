@@ -35,6 +35,7 @@ jobs:
         uses: scientist-softserv/actions/setup-env@v3-plus-token
         with:
           tag: ${{ inputs.tag }}
+          token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Github Container Login
         uses: docker/login-action@v2
         with:

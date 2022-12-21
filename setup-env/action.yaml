@@ -7,6 +7,9 @@ inputs:
   image_name:
     required: false
     type: string
+  token:
+    required: false
+    type: string
 
 runs:
   using: "composite"
@@ -28,4 +31,4 @@ runs:
       uses: actions/checkout@v3
       with:
         submodules: true
-        token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
+        token: ${{ inputs.token }}

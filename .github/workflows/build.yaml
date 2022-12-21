@@ -68,6 +68,7 @@ jobs:
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}
+          token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx

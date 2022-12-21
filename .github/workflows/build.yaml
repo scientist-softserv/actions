@@ -17,7 +17,7 @@ on:
         type: boolean
       submodules:
         description: "Use if you need to build a submodule"
-        required: false
+        required: true
         default: false
         type: bolean
       tag:

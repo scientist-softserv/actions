@@ -2,6 +2,9 @@ name: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
     inputs:
+      db:
+        default: true
+        type: boolean
       confdir:
         required: false
         type: string
@@ -21,6 +24,9 @@ on:
         type: boolean
   workflow_call:
     inputs:
+      db:
+        default: true
+        type: boolean
       confdir:
         required: false
         type: string
@@ -91,9 +97,10 @@ jobs:
           cd ${{ inputs.subdir }};
           docker-compose pull worker
       - name: Start containers
+        if: ${{ inputs.db }} 
         run: >-
           cd ${{ inputs.subdir }};
-          chmod 777 db/schema.rb;
+          chmod -f 777 db/schema.rb;
           docker-compose up -d web
       - name: Check for and setup Solr if needed
         shell: bash

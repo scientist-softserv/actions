@@ -2,6 +2,9 @@ name: "Lint for Rails Projects"
 on:
   workflow_dispatch:
     inputs:
+      db:
+        default: true
+        type: boolean
       subdir:
         default: '.'
         type: string
@@ -13,6 +16,9 @@ on:
         type: boolean
   workflow_call:
     inputs:
+      db:
+        default: true
+        type: boolean
       subdir:
         default: '.'
         type: string

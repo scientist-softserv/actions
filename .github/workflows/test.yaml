@@ -9,6 +9,9 @@ on:
       subdir:
         default: '.'
         type: string
+      db:
+        default: true
+        type: boolean
       tag:
         required: false
         type: string
@@ -28,6 +31,9 @@ on:
       subdir:
         default: '.'
         type: string
+      db:
+        default: true
+        type: boolean
       tag:
         required: false
         type: string
@@ -94,6 +100,7 @@ jobs:
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
+          chmod -f 777 db/schema.rb;
           docker-compose up -d web
       - name: Check for and setup Solr if needed
         shell: bash
@@ -108,6 +115,12 @@ jobs:
           else
             echo "No solr directory found, skipping..."
           fi
+      - name: Setup db
+        if: ${{ inputs.db }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          docker-compose exec -T web sh -c
+          "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,

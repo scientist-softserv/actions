@@ -10,7 +10,7 @@ on:
         default: '.'
         type: string
       db:
-        default: true
+        required: false
         type: boolean
       tag:
         required: false
@@ -32,7 +32,7 @@ on:
         default: '.'
         type: string
       db:
-        default: true
+        required: false
         type: boolean
       tag:
         required: false

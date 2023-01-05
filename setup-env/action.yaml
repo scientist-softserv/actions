@@ -29,6 +29,3 @@ runs:
       shell: bash
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        submodules: false
-        token: ${{ inputs.token }}

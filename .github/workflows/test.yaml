@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       db:
-        default: true
+        required: false
         type: boolean
       confdir:
         required: false
@@ -25,7 +25,7 @@ on:
   workflow_call:
     inputs:
       db:
-        default: true
+        required: false
         type: boolean
       confdir:
         required: false

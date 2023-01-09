@@ -93,7 +93,7 @@ jobs:
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
-          chmod -f 777 db/schema.rb;
+          [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
           docker-compose up -d web
       - name: Check for and setup Solr if needed
         shell: bash

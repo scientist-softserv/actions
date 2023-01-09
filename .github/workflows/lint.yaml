@@ -15,10 +15,10 @@ on:
         required: false
         type: boolean
   workflow_call:
-    db:
-      default: true
-      type: boolean
     inputs:
+      db:
+        default: true
+        type: boolean
       subdir:
         default: '.'
         type: string

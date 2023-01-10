@@ -112,7 +112,7 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose exec -T web sh -c
-          "RAILS_ENV=test rake db:create db:schema:load db:migrate"
+          "rake engine_cart:generate"
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,

@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+      setup_db_cmd:
+        required: false
+        type: string
+        default: "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
       worker:
         required: false
         type: boolean
@@ -35,6 +39,10 @@ on:
         required: false
         type: string
         default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+      setup_db_cmd:
+        required: false
+        type: string
+        default: "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
       worker:
         required: false
         type: boolean
@@ -93,7 +101,7 @@ jobs:
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
-          chmod 777 db/schema.rb;
+          [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
           docker-compose up -d web
       - name: Check for and setup Solr if needed
         shell: bash
@@ -112,7 +120,7 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose exec -T web sh -c
-          "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
+          "${{ inputs.setup_db_cmd }}"
       - name: Run Specs
         env:
           # Specifies how many jobs you would like to run in parallel,

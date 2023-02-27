@@ -145,7 +145,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
-          context: .
+          context: ./solr
           platforms: ${{ inputs.platforms }}
           push: true
           tags: |

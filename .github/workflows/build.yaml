@@ -15,6 +15,9 @@ on:
         description: "Use if you need to build a specific Solr image and push to the registry"
         required: false
         type: boolean
+      solrTarget:
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
@@ -42,6 +45,9 @@ on:
         description: "Use if you need to build a specific Solr image and push to the registry"
         required: false
         type: boolean
+      solrTarget:
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
@@ -64,7 +70,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.10
+        uses: scientist-softserv/actions/setup-env@v0.0.11
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}
@@ -151,4 +157,4 @@ jobs:
           tags: |
             ${{ steps.meta-solr.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
-          target: ${{ inputs.target }}
+          target: ${{ inputs.solrTarget }}

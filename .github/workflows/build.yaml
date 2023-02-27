@@ -15,6 +15,9 @@ on:
         description: "Use if you need to build a specific Solr image and push to the registry"
         required: false
         type: boolean
+      solrTarget:
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
@@ -40,6 +43,9 @@ on:
         type: string
       solr:
         description: "Use if you need to build a specific Solr image and push to the registry"
+        required: false
+        type: boolean
+      solrTarget:
         required: false
         type: boolean
       tag:
@@ -151,4 +157,4 @@ jobs:
           tags: |
             ${{ steps.meta-solr.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
-          target: ${{ inputs.target }}
+          target: ${{ inputs.solrTarget }}

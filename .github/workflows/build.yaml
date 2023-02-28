@@ -17,7 +17,7 @@ on:
         type: boolean
       solrTarget:
         required: false
-        type: boolean
+        type: string
       tag:
         required: false
         type: string
@@ -47,7 +47,7 @@ on:
         type: boolean
       solrTarget:
         required: false
-        type: boolean
+        type: string
       tag:
         required: false
         type: string

@@ -2,23 +2,41 @@ name: "Lint for Rails Projects"
 on:
   workflow_dispatch:
     inputs:
+      base:
+        required: false
+        type: boolean
       subdir:
         default: '.'
         type: string
+      solr:
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
+      web:
+        required: false
+        type: boolean
       worker:
         required: false
         type: boolean
   workflow_call:
     inputs:
+      base:
+        required: false
+        type: boolean
       subdir:
         default: '.'
         type: string
+      solr:
+        required: false
+        type: boolean
       tag:
         required: false
         type: string
+      web:
+        required: false
+        type: boolean
       worker:
         required: false
         type: boolean
@@ -42,17 +60,28 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull image to prevent build
+      - name: Pull base image to prevent build
+        if: ${{ inputs.base }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          docker-compose pull base
+      - name: Pull solr image to prevent build
+        if: ${{ inputs.solr }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          docker-compose pull solr
+      - name: Pull web image to prevent build
+        if: ${{ inputs.web }}
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
+        if: ${{ inputs.worker }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull worker
-        if: ${{ inputs.worker }}
       - name: Run Rubocop
         run: >-
           cd ${{ inputs.subdir }};

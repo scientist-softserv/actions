@@ -1,13 +1,7 @@
 name: "Build Docker Images"
 on:
-  workflow_dispatch: {}
-
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      base:
-        description: "Set true to build a base image, re-tag and push to the registry"
-        required: false
-        type: boolean
       baseTarget:
         description: "Used to set your target for the base image"
         required: false
@@ -16,16 +10,12 @@ on:
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
         type: string
       platforms:
-        description: "Which platforms you would like built through CI"
         default: "linux/amd64,linux/arm64"
+        description: "Which platforms you would like built through CI"
         type: string
       subdir:
         default: '.'
         type: string
-      solr:
-        description: "Set true to build a Solr image, re-tag and push to the registry"
-        required: false
-        type: boolean
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
@@ -37,18 +27,45 @@ on:
         description: "This is deprecated, dropping support after v0.0.11. It is now renamed to webTarget, you must also set web: true to trigger the build"
         required: false
         type: string
-      web:
-        description: "Set true to build a web image, re-tag and push to the registry"
-        required: false
-        type: boolean
       webTarget:
         description: "Used to set your target for the web image"
         required: false
         type: string
-      worker:
-        description: "Set true to build a worker image, re-tag and push to the registry"
+      workerTarget:
+        description: "Used to set your target for the worker image"
         required: false
-        type: boolean
+        type: string
+  workflow_call:
+    inputs:
+      baseTarget:
+        description: "Used to set your target for the base image"
+        required: false
+        type: string
+      image_name:
+        description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
+        type: string
+      platforms:
+        default: "linux/amd64,linux/arm64"
+        description: "Which platforms you would like built through CI"
+        type: string
+      subdir:
+        default: '.'
+        type: string
+      solrTarget:
+        description: "Used to set your target for the solr image"
+        required: false
+        type: string
+      tag:
+        required: false
+        type: string
+      target:
+        description: "This is deprecated, dropping support after v0.0.11. It is now renamed to webTarget, you must also set web: true to trigger the build"
+        required: false
+        type: string
+      webTarget:
+        description: "Used to set your target for the web image"
+        required: false
+        type: string
       workerTarget:
         description: "Used to set your target for the worker image"
         required: false
@@ -85,7 +102,8 @@ jobs:
           touch .env;
           TAG=latest docker-compose pull web || true
       - name: Retag action for base
-        if: ${{ inputs.base }}
+        if: ${{ inputs.baseTarget != '' }}
+        run: echo 'This step will only run if baseTarget has a value set.'
         id: meta-base
         uses: docker/metadata-action@v4.1.1
         with:
@@ -94,7 +112,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for web
-        if: ${{ inputs.web }}
+        if: ${{ inputs.webTarget != '' }}
+        run: echo 'This step will only run if webTarget has a value set.'
         id: meta-web
         uses: docker/metadata-action@v4.1.1
         with:
@@ -103,7 +122,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for worker
-        if: ${{ inputs.worker }}
+        if: ${{ inputs.workerTarget != '' }}
+        run: echo 'This step will only run if workerTarget has a value set.'
         id: meta-worker
         uses: docker/metadata-action@v4.1.1
         with:
@@ -112,7 +132,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for solr
-        if: ${{ inputs.solr }}
+        if: ${{ inputs.solrTarget != '' }}
+        run: echo 'This step will only run if baseTarget has a value set.'
         id: meta-solr
         uses: docker/metadata-action@v4.1.1
         with:
@@ -122,7 +143,8 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Build and push base
         uses: docker/build-push-action@v3
-        if: ${{ inputs.base }}
+        if: ${{ inputs.baseTarget != '' }}
+        run: echo 'This step will only run if baseTarget has a value set.'
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
@@ -137,7 +159,8 @@ jobs:
           target: ${{ inputs.webTarget }}
       - name: Build and push web
         uses: docker/build-push-action@v3
-        if: ${{ inputs.web }}
+        if: ${{ inputs.webTarget != '' }}
+        run: echo 'This step will only run if webTarget has a value set.'
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
@@ -151,7 +174,8 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
           target: ${{ inputs.webTarget }}
       - name: Build and push worker
-        if: ${{ inputs.worker }}
+        if: ${{ inputs.workerTarget != '' }}
+        run: echo 'This step will only run if workerTarget has a value set.'
         uses: docker/build-push-action@v3
         with:
           build-args: |
@@ -166,7 +190,8 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
           target: ${{ inputs.workerTarget }}
       - name: Build and push solr
-        if: ${{ inputs.solr }}
+        if: ${{ inputs.solrTarget != '' }}
+        run: echo 'This step will only run if solrTarget has a value set.'
         uses: docker/build-push-action@v3
         with:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}

@@ -103,7 +103,6 @@ jobs:
           TAG=latest docker-compose pull web || true
       - name: Retag action for base
         if: ${{ inputs.baseTarget != '' }}
-        run: echo 'This step will only run if baseTarget has a value set.'
         id: meta-base
         uses: docker/metadata-action@v4.1.1
         with:
@@ -113,7 +112,6 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for web
         if: ${{ inputs.webTarget != '' }}
-        run: echo 'This step will only run if webTarget has a value set.'
         id: meta-web
         uses: docker/metadata-action@v4.1.1
         with:
@@ -123,7 +121,6 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for worker
         if: ${{ inputs.workerTarget != '' }}
-        run: echo 'This step will only run if workerTarget has a value set.'
         id: meta-worker
         uses: docker/metadata-action@v4.1.1
         with:
@@ -133,7 +130,6 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Retag action for solr
         if: ${{ inputs.solrTarget != '' }}
-        run: echo 'This step will only run if baseTarget has a value set.'
         id: meta-solr
         uses: docker/metadata-action@v4.1.1
         with:
@@ -144,7 +140,6 @@ jobs:
       - name: Build and push base
         uses: docker/build-push-action@v3
         if: ${{ inputs.baseTarget != '' }}
-        run: echo 'This step will only run if baseTarget has a value set.'
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
@@ -160,7 +155,6 @@ jobs:
       - name: Build and push web
         uses: docker/build-push-action@v3
         if: ${{ inputs.webTarget != '' }}
-        run: echo 'This step will only run if webTarget has a value set.'
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
@@ -175,7 +169,6 @@ jobs:
           target: ${{ inputs.webTarget }}
       - name: Build and push worker
         if: ${{ inputs.workerTarget != '' }}
-        run: echo 'This step will only run if workerTarget has a value set.'
         uses: docker/build-push-action@v3
         with:
           build-args: |
@@ -191,7 +184,6 @@ jobs:
           target: ${{ inputs.workerTarget }}
       - name: Build and push solr
         if: ${{ inputs.solrTarget != '' }}
-        run: echo 'This step will only run if solrTarget has a value set.'
         uses: docker/build-push-action@v3
         with:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}

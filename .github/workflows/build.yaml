@@ -87,7 +87,8 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull from cache to speed up build
+      - name: Pull from cache to speed up web build
+        if: ${{ inputs.webTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
@@ -130,8 +131,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Build and push base
-        uses: docker/build-push-action@v3
         if: ${{ inputs.baseTarget != '' }}
+        uses: docker/build-push-action@v3
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
@@ -145,8 +146,8 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:${{ env.TAG }}
           target: ${{ inputs.webTarget }}
       - name: Build and push web
-        uses: docker/build-push-action@v3
         if: ${{ inputs.webTarget != '' }}
+        uses: docker/build-push-action@v3
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}

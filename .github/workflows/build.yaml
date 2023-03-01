@@ -23,10 +23,6 @@ on:
       tag:
         required: false
         type: string
-      target:
-        description: "This is deprecated, dropping support after v0.0.11. It is now renamed to webTarget, you must also set web: true to trigger the build"
-        required: false
-        type: string
       webTarget:
         description: "Used to set your target for the web image"
         required: false
@@ -56,10 +52,6 @@ on:
         required: false
         type: string
       tag:
-        required: false
-        type: string
-      target:
-        description: "This is deprecated, dropping support after v0.0.11. It is now renamed to webTarget, you must also set web: true to trigger the build"
         required: false
         type: string
       webTarget:

@@ -61,7 +61,7 @@ on:
         description: "Used to set your target for the base image"
         required: false
         type: string
-       image_name:
+      image_name:
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
         type: string
       platforms:

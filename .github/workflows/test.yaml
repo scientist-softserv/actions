@@ -122,6 +122,7 @@ jobs:
           docker-compose exec -T web sh -c
           "${{ inputs.setup_db_cmd }}"
       - name: Run Specs
+        id: run-specs
         env:
           # Specifies how many jobs you would like to run in parallel,
           # used for partitioning
@@ -133,6 +134,8 @@ jobs:
           cd ${{ inputs.subdir }};
           docker-compose exec -T web sh -c
           "${{ inputs.rspec_cmd }}"
+      - name: Invert success and failure
+        run: if [[ ${{ steps.run-specs.outcome }} == "failure" ]]; then exit 0; else exit 1; fi
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

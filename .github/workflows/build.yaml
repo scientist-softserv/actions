@@ -13,12 +13,12 @@ on:
         default: "linux/amd64,linux/arm64"
         description: "Which platforms you would like built through CI"
         type: string
-      subdir:
-        default: '.'
-        type: string
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
+        type: string
+      subdir:
+        default: '.'
         type: string
       tag:
         required: false
@@ -44,12 +44,12 @@ on:
         default: "linux/amd64,linux/arm64"
         description: "Which platforms you would like built through CI"
         type: string
-      subdir:
-        default: '.'
-        type: string
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
+        type: string
+      subdir:
+        default: '.'
         type: string
       tag:
         required: false

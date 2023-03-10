@@ -2,42 +2,50 @@ name: "Lint for Rails Projects"
 on:
   workflow_dispatch:
     inputs:
-      base:
+      baseTarget:
+        description: "Used to enable the linter to run on the base image"
+        required: false
+        type: boolean
+      solrTarget:
+        description: "Used to enable the linter to run on the solr image"
         required: false
         type: boolean
       subdir:
         default: '.'
         type: string
-      solr:
-        required: false
-        type: boolean
       tag:
         required: false
         type: string
-      web:
+      webTarget:
+        description: "Used to enable the linter to run on the web image"
         required: false
         type: boolean
-      worker:
+      workerTarget:
+        description: "Used to enable the linter to run on the worker image"
         required: false
         type: boolean
   workflow_call:
     inputs:
-      base:
+      baseTarget:
+        description: "Used to enable the linter to run on the base image"
+        required: false
+        type: boolean
+      solrTarget:
+        description: "Used to enable the linter to run on the solr image"
         required: false
         type: boolean
       subdir:
         default: '.'
         type: string
-      solr:
-        required: false
-        type: boolean
       tag:
         required: false
         type: string
-      web:
+      webTarget:
+        description: "Used to enable the linter to run on the web image"
         required: false
         type: boolean
-      worker:
+      workerTarget:
+        description: "Used to enable the linter to run on the worker image"
         required: false
         type: boolean
 
@@ -61,24 +69,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull base image to prevent build
-        if: ${{ inputs.base }}
+        if: ${{ inputs.baseTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull base
       - name: Pull solr image to prevent build
-        if: ${{ inputs.solr }}
+        if: ${{ inputs.solrTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull solr
       - name: Pull web image to prevent build
-        if: ${{ inputs.web }}
+        if: ${{ inputs.webTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
-        if: ${{ inputs.worker }}
+        if: ${{ inputs.workerTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull worker

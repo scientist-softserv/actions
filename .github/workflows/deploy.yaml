@@ -11,8 +11,8 @@ on:
       k8s-namespace:
         required: false
         type: string
-      solr:
-        description: "Add if your solr image is from the registry"
+      solrTarget:
+        description: "Used if you have a solr image to deploy"
         required: false
         type: boolean
       tag:
@@ -78,7 +78,7 @@ jobs:
         with:
           limit-access-to-actor: true
       - name: Do deploy with solr registry image
-        if: ${{ inputs.solr }}
+        if: ${{ inputs.solrTarget }}
         run: |
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;

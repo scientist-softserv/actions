@@ -2,19 +2,14 @@ name: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
     inputs:
-      base:
+      baseTarget:
+        description: "Used to enable tests to run on the base image"
         required: false
         type: boolean
       confdir:
         required: false
         type: string
         default: "/app/samvera/hyrax-webapp/solr/config"
-      subdir:
-        default: '.'
-        type: string
-      tag:
-        required: false
-        type: string
       rspec_cmd:
         required: false
         type: string
@@ -23,30 +18,34 @@ on:
         required: false
         type: string
         default: "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
-      solr:
+      solrTarget:
+        description: "Used to enable tests to run on the solr image"
         required: false
         type: boolean
-      web:
+      subdir:
+        default: '.'
+        type: string
+      tag:
+        required: false
+        type: string
+      webTarget:
+        description: "Used to enable tests to run on the web image"
         required: false
         type: boolean
-      worker:
+      workerTarget:
+        description: "Used to enable tests to run on the worker image"
         required: false
         type: boolean
   workflow_call:
     inputs:
-      base:
+      baseTarget:
+        description: "Used to enable tests to run on the base image"
         required: false
         type: boolean
       confdir:
         required: false
         type: string
         default: "/app/samvera/hyrax-webapp/solr/config"
-      subdir:
-        default: '.'
-        type: string
-      tag:
-        required: false
-        type: string
       rspec_cmd:
         required: false
         type: string
@@ -55,13 +54,22 @@ on:
         required: false
         type: string
         default: "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
-      solr:
+      solrTarget:
+        description: "Used to enable tests to run on the solr image"
         required: false
         type: boolean
-      web:
+      subdir:
+        default: '.'
+        type: string
+      tag:
+        required: false
+        type: string
+      webTarget:
+        description: "Used to enable tests to run on the web image"
         required: false
         type: boolean
-      worker:
+      workerTarget:
+        description: "Used to enable tests to run on the worker image"
         required: false
         type: boolean
 
@@ -106,24 +114,24 @@ jobs:
         with:
           limit-access-to-actor: true
       - name: Pull base image to prevent build
-        if: ${{ inputs.base }}
+        if: ${{ inputs.baseTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull base
       - name: Pull solr image to prevent build
-        if: ${{ inputs.solr }}
+        if: ${{ inputs.solrTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull solr
       - name: Pull web image to prevent build
-        if: ${{ inputs.web }}
+        if: ${{ inputs.webTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
-        if: ${{ inputs.worker }}
+        if: ${{ inputs.workerTarget }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull worker
@@ -133,7 +141,7 @@ jobs:
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
           docker-compose up -d web
       - name: Setup Solr
-        if: ${{ inputs.solr }}
+        if: ${{ inputs.solrTarget }}
         shell: bash
         run: >-
           cd ${{ inputs.subdir }};

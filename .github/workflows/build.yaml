@@ -136,7 +136,7 @@ jobs:
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:${{ env.TAG }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:latest
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
           platforms: ${{ inputs.platforms }}
@@ -151,7 +151,7 @@ jobs:
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:latest
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
           platforms: ${{ inputs.platforms }}
@@ -166,7 +166,7 @@ jobs:
         with:
           build-args: |
             APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:latest
           context: .
           file: ${{ inputs.subdir}}/Dockerfile
           platforms: ${{ inputs.platforms }}
@@ -179,7 +179,7 @@ jobs:
         if: ${{ inputs.solrTarget != '' }}
         uses: docker/build-push-action@v3
         with:
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:latest
           context: ./solr
           platforms: ${{ inputs.platforms }}
           push: true

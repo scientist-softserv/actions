@@ -72,7 +72,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.12
+        uses: scientist-softserv/actions/setup-env@v0.0.14
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}

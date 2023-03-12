@@ -26,7 +26,6 @@ permissions:
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 jobs:
   if-merged-delete-image:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - id: setup
@@ -43,7 +42,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Delete web image
-        if: ${{ inputs.webImage }}
+        if: ${{ inputs.webImage && github.event.action == 'closed' && github.event.pull_request.merged = true }}
         uses: bots-house/ghcr-delete-image-action@v1.1.0
         with:
           # NOTE: at now only orgs is supported
@@ -56,7 +55,7 @@ jobs:
           # token: ${{ secrets.PAT }}
           tag: ${{ env.$TAG }}
       - name: Delete worker image
-        if: ${{ inputs.workerImage }}
+        if: ${{ inputs.workerImage && github.event.action == 'closed' && github.event.pull_request.merged = true }}
         uses: bots-house/ghcr-delete-image-action@v1.1.0
         with:
           # NOTE: at now only orgs is supported

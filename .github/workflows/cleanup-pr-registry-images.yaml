@@ -1,22 +1,23 @@
 name: Cleanup PR Registry Images
 on:
-  workflow_call:
-    inputs:
-      image_name:
-        description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
-        required: false
-        type: string
-      tag:
-        required: false
-        type: string
-      webImage:
-        description: "Delete the web container registry image"
-        required: true
-        type: boolean
-      workerImage:
-        description: "Delete the worker container registry image"
-        required: true
-        type: boolean
+  pull_request:
+    types: [opened, closed]
+  inputs:
+    image_name:
+      description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
+      required: false
+      type: string
+    tag:
+      required: false
+      type: string
+    webImage:
+      description: "Delete the web container registry image"
+      required: true
+      type: boolean
+    workerImage:
+      description: "Delete the worker container registry image"
+      required: true
+      type: boolean
 
 permissions:
   contents: read
@@ -29,6 +30,7 @@ env:
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 jobs:
   delete-image:
+    if: ${{ github.event.pull_request.merged = true }}
     runs-on: ubuntu-latest
     steps:
       - id: setup

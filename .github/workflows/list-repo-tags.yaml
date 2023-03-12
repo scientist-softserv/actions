@@ -1,0 +1,11 @@
+name: List all tagged image versions
+on:
+
+jobs:
+  curl:
+    runs-on: ubuntu-latest
+    steps:
+    - name: curl
+      uses: wei/curl@master
+      with:
+        args: -H "Authorization: Bearer $GITHUB_TOKEN" https://ghcr.io/v2/{$owner}/${repo}/tags/list

@@ -29,7 +29,6 @@ env:
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 jobs:
   delete-image:
-    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     steps:
       - id: setup

@@ -23,6 +23,9 @@ permissions:
   packages: write
   security-events: write
 
+env:
+  REGISTRY: ghcr.io
+
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 jobs:
   delete-image:

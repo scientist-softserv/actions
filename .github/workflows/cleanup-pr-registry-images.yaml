@@ -1,0 +1,69 @@
+name: Cleanup PR Registry Images
+on:
+  pull_request:
+    types:
+      - closed
+  inputs:
+    webImage:
+      description: "Delete the web container registry image"
+      required: true
+      type: boolean
+    workerImage:
+      description: "Delete the worker container registry image"
+      required: true
+      type: boolean
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+jobs:
+  if-merged-delete-image:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - id: setup
+        name: Setup
+        uses: scientist-softserv/actions/setup-env@add-prune-ghcr-images-after-merge-to-main
+        with:
+          tag: ${{ inputs.tag }}
+          image_name: ${{ inputs.image_name }}
+          token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Delete web image
+        if: ${{ inputs.webImage }}
+        uses: bots-house/ghcr-delete-image-action@v1.1.0
+        with:
+          # NOTE: at now only orgs is supported
+          owner: scientist-softserv
+          name: ${{ env.REPO_LOWER }}
+          # NOTE: using Personal Access Token
+          # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
+          # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # token: ${{ secrets.PAT }}
+          tag: ${{ inputs.tag }}
+      - name: Delete worker image
+        if: ${{ inputs.workerImage }}
+        uses: bots-house/ghcr-delete-image-action@v1.1.0
+        with:
+          # NOTE: at now only orgs is supported
+          owner: scientist-softserv
+          name: ${{ env.REPO_LOWER }}/worker
+          # NOTE: using Personal Access Token
+          # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
+          # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # token: ${{ secrets.PAT }}
+          tag: ${{ inputs.tag }}

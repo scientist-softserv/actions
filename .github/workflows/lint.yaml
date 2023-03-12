@@ -32,7 +32,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.11
+        uses: scientist-softserv/actions/setup-env@add-prune-ghcr-images-after-merge-to-main
         with:
           tag: ${{ inputs.tag }}
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}

@@ -4,10 +4,10 @@ on:
     inputs:
       image_name:
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
-        required: true
+        required: false
         type: string
       tag:
-        required: true
+        required: false
         type: string
       webImage:
         description: "Delete the web container registry image"
@@ -54,7 +54,7 @@ jobs:
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
           token: ${{ secrets.GITHUB_TOKEN }}
           # token: ${{ secrets.PAT }}
-          tag: ${{ inputs.tag }}
+          tag: ${{ env.$TAG }}
       - name: Delete worker image
         if: ${{ inputs.workerImage }}
         uses: bots-house/ghcr-delete-image-action@v1.1.0

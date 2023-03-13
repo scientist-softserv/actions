@@ -71,8 +71,8 @@ jobs:
           # NOTE: using Personal Access Token
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # token: ${{ secrets.PAT }}
+          # token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           tag: ${{ env.TAG }}
       - name: Delete worker image
         if: ${{ inputs.workerImage }}
@@ -84,6 +84,6 @@ jobs:
           # NOTE: using Personal Access Token
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # token: ${{ secrets.PAT }}
+          # token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           tag: ${{ env.TAG }}

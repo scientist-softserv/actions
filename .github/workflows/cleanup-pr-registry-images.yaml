@@ -50,7 +50,7 @@ jobs:
         with:
           # NOTE: at now only orgs is supported
           owner: scientist-softserv
-          name: ${{ env.REPO_LOWER }}
+          name: ${{ inputs.image_name || github.repository }}
           # NOTE: using Personal Access Token
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
@@ -63,7 +63,7 @@ jobs:
         with:
           # NOTE: at now only orgs is supported
           owner: scientist-softserv
-          name: ${{ env.REPO_LOWER }}/worker
+          name: ${{ inputs.image_name || github.repository }}/worker
           # NOTE: using Personal Access Token
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
           # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token

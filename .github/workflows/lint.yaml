@@ -3,13 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       baseTarget:
-        description: "Used to enable the linter to run on the base image"
+        description: "Used to set your target for the base image"
         required: false
-        type: boolean
+        type: string
       solrTarget:
-        description: "Used to enable the linter to run on the solr image"
+        description: "Used to set your target for the solr image"
         required: false
-        type: boolean
+        type: string
       subdir:
         default: '.'
         type: string
@@ -17,23 +17,23 @@ on:
         required: false
         type: string
       webTarget:
-        description: "Used to enable the linter to run on the web image"
+        description: "Used to set your target for the web image"
         required: false
-        type: boolean
+        type: string
       workerTarget:
-        description: "Used to enable the linter to run on the worker image"
+        description: "Used to set your target for the worker image"
         required: false
-        type: boolean
+        type: string
   workflow_call:
     inputs:
       baseTarget:
-        description: "Used to enable the linter to run on the base image"
+        description: "Used to set your target for the base image"
         required: false
-        type: boolean
+        type: string
       solrTarget:
-        description: "Used to enable the linter to run on the solr image"
+        description: "Used to set your target for the solr image"
         required: false
-        type: boolean
+        type: string
       subdir:
         default: '.'
         type: string
@@ -41,13 +41,13 @@ on:
         required: false
         type: string
       webTarget:
-        description: "Used to enable the linter to run on the web image"
+        description: "Used to set your target for the web image"
         required: false
-        type: boolean
+        type: string
       workerTarget:
-        description: "Used to enable the linter to run on the worker image"
+        description: "Used to set your target for the worker image"
         required: false
-        type: boolean
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -69,24 +69,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull base image to prevent build
-        if: ${{ inputs.baseTarget }}
+        if: ${{ inputs.baseTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull base
       - name: Pull solr image to prevent build
-        if: ${{ inputs.solrTarget }}
+        if: ${{ inputs.solrTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull solr
       - name: Pull web image to prevent build
-        if: ${{ inputs.webTarget }}
+        if: ${{ inputs.webTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
-        if: ${{ inputs.workerTarget }}
+        if: ${{ inputs.workerTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull worker

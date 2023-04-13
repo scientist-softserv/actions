@@ -2,26 +2,52 @@ name: "Lint for Rails Projects"
 on:
   workflow_dispatch:
     inputs:
+      baseTarget:
+        description: "Used to set your target for the base image"
+        required: false
+        type: string
+      solrTarget:
+        description: "Used to set your target for the solr image"
+        required: false
+        type: string
       subdir:
         default: '.'
         type: string
       tag:
         required: false
         type: string
-      worker:
+      webTarget:
+        description: "Used to set your target for the web image"
         required: false
-        type: boolean
+        type: string
+      workerTarget:
+        description: "Used to set your target for the worker image"
+        required: false
+        type: string
   workflow_call:
     inputs:
+      baseTarget:
+        description: "Used to set your target for the base image"
+        required: false
+        type: string
+      solrTarget:
+        description: "Used to set your target for the solr image"
+        required: false
+        type: string
       subdir:
         default: '.'
         type: string
       tag:
         required: false
         type: string
-      worker:
+      webTarget:
+        description: "Used to set your target for the web image"
         required: false
-        type: boolean
+        type: string
+      workerTarget:
+        description: "Used to set your target for the worker image"
+        required: false
+        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -32,7 +58,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.11
+        uses: scientist-softserv/actions/setup-env@adl-update-build
         with:
           tag: ${{ inputs.tag }}
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
@@ -42,17 +68,28 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull image to prevent build
+      - name: Pull base image to prevent build
+        if: ${{ inputs.baseTarget != '' }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          docker-compose pull base
+      - name: Pull solr image to prevent build
+        if: ${{ inputs.solrTarget != '' }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          docker-compose pull solr
+      - name: Pull web image to prevent build
+        if: ${{ inputs.webTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
           docker-compose pull web
       - name: Pull worker image to prevent build
+        if: ${{ inputs.workerTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose pull worker
-        if: ${{ inputs.worker }}
       - name: Run Rubocop
         run: >-
           cd ${{ inputs.subdir }};

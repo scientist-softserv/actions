@@ -11,8 +11,8 @@ on:
       k8s-namespace:
         required: false
         type: string
-      solr:
-        description: "Add if your solr image is from the registry"
+      deploy-solr-image:
+        description: "Used if you have a solr image to deploy"
         required: false
         type: boolean
       tag:
@@ -67,7 +67,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.11
+        uses: scientist-softserv/actions/setup-env@adl-update-build
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}
@@ -77,8 +77,8 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - name: Do deploy with solr registry image
-        if: ${{ inputs.solr }}
+      - name: Do deploy with solr image
+        if: ${{ inputs.deploy-solr-image }}
         run: |
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;
@@ -88,6 +88,7 @@ jobs:
           export SOLR_IMAGE=ghcr.io/${REPO_LOWER}/solr;
           ./bin/helm_deploy ${{ inputs.k8s-release-name || format('{0}-{1}', github.event.repository.name, inputs.environment) }} ${{ inputs.k8s-namespace || format('{0}-{1}', github.event.repository.name, inputs.environment) }}
       - name: Do deploy
+        if: ${{ inputs.deploy-solr-image }} == 'false'
         run: |
           echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           DOLLAR=$ envsubst < ops/${{ inputs.environment }}-deploy.tmpl.yaml > ops/${{ inputs.environment }}-deploy.yaml;

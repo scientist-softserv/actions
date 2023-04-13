@@ -1,10 +1,10 @@
 name: "Set up env vars"
 description: "Set up env vars"
 inputs:
-  tag:
+  image_name:
     required: false
     type: string
-  image_name:
+  tag:
     required: false
     type: string
   token:

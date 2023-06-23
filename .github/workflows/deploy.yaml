@@ -1,5 +1,24 @@
 name: "Deploy"
 on:
+  workflow_dispatch:
+    inputs:
+      image_name:
+        type: string
+        description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
+      k8s-release-name:
+        required: false
+        type: string
+      k8s-namespace:
+        required: false
+        type: string
+      deploy-solr-image:
+        description: "Used if you have a solr image to deploy"
+        required: false
+        type: boolean
+      tag:
+        description: "Tag to override default of current branch sha"
+        required: false
+        type: string
   workflow_call:
     inputs:
       image_name:

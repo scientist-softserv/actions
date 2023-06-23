@@ -18,6 +18,10 @@ on:
         required: false
         type: string
         default: "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
+      setup_solr_cmd:
+        required: false
+        type: string
+        default: 'solrcloud-upload-configset.sh "${CONFDIR}" && SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh && solrcloud-assign-configset.sh'
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
@@ -54,6 +58,10 @@ on:
         required: false
         type: string
         default: "RAILS_ENV=test bundle exec rake db:create db:schema:load db:migrate"
+      setup_solr_cmd:
+          required: false
+          type: string
+          default: 'solrcloud-upload-configset.sh "${CONFDIR}" && SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh && solrcloud-assign-configset.sh'
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
@@ -145,10 +153,8 @@ jobs:
         shell: bash
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose exec -T web sh -c;
-          solrcloud-upload-configset.sh "${CONFDIR}";
-          SOLR_COLLECTION_NAME=hydra-test solrcloud-assign-configset.sh;
-          solrcloud-assign-configset.sh
+          docker-compose exec -T web sh -c
+          "${{ inputs.setup_solr_cmd }}"
       - name: Setup db
         run: >-
           cd ${{ inputs.subdir }};

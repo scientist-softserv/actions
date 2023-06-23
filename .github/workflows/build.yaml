@@ -144,7 +144,7 @@ jobs:
           tags: |
             ${{ steps.meta-base.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:${{ env.TAG }}
-          target: ${{ inputs.webTarget }}
+          target: ${{ inputs.baseTarget }}
       - name: Build and push web
         if: ${{ inputs.webTarget != '' }}
         uses: docker/build-push-action@v3

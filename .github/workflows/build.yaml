@@ -8,7 +8,7 @@ on:
         type: string
       image_name:
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
-        type: stringx
+        type: string
       platforms:
         default: "linux/amd64,linux/arm64"
         description: "Which platforms you would like built through CI"

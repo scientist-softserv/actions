@@ -8,7 +8,7 @@ on:
         type: string
       image_name:
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
-        type: string
+        type: stringx
       platforms:
         default: "linux/amd64,linux/arm64"
         description: "Which platforms you would like built through CI"
@@ -144,7 +144,7 @@ jobs:
           tags: |
             ${{ steps.meta-base.outputs.tags }}
             ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:${{ env.TAG }}
-          target: ${{ inputs.webTarget }}
+          target: ${{ inputs.baseTarget }}
       - name: Build and push web
         if: ${{ inputs.webTarget != '' }}
         uses: docker/build-push-action@v3

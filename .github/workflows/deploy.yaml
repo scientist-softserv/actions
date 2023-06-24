@@ -55,6 +55,8 @@ jobs:
         --values ops/${{ inputs.environment }}-deploy.yaml
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
       KUBECONFIG: ./kubeconfig.yml
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       CLIENT_ADMIN_USER_EMAIL: ${{ secrets.CLIENT_ADMIN_USER_EMAIL }}
       CLIENT_ADMIN_USER_PASSWORD: ${{ secrets.CLIENT_ADMIN_USER_PASSWORD }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}

@@ -147,13 +147,13 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
-          docker-compose up -d web
+          docker-compose up -d
       - name: Setup Solr
         if: ${{ inputs.solrTarget != '' }}
         shell: bash
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose exec -T web sh -c
+          docker-compose exec -T solr sh -c
           "${{ inputs.setup_solr_cmd }}"
       - name: Setup db
         run: >-

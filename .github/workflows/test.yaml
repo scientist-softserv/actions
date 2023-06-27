@@ -125,40 +125,40 @@ jobs:
         if: ${{ inputs.baseTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose pull base
+          docker compose pull base
       - name: Pull solr image to prevent build
         if: ${{ inputs.solrTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose pull solr
+          docker compose pull solr
       - name: Pull web image to prevent build
         if: ${{ inputs.webTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
-          docker-compose pull web
+          docker compose pull web
       - name: Pull worker image to prevent build
         if: ${{ inputs.workerTarget != '' }}
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose pull worker
+          docker compose pull worker
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
-          docker-compose up -d
+          docker compose up -d
       - name: Setup Solr
         if: ${{ inputs.solrTarget != '' }}
         shell: bash
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose exec -T solr sh -c
+          docker compose exec -T solr sh -c
           "${{ inputs.setup_solr_cmd }}"
       - name: Setup db
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose exec -T web sh -c
+          docker compose exec -T web sh -c
           "${{ inputs.setup_db_cmd }}"
       - name: Run Specs
         id: run-specs
@@ -171,7 +171,7 @@ jobs:
         continue-on-error: true
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose exec -T web sh -c
+          docker compose exec -T web sh -c
           "${{ inputs.rspec_cmd }}"
       - name: Fail job if spec failure
         run: if [[ ${{ steps.run-specs.outcome }} == "failure" ]]; then exit 1; else exit 0; fi

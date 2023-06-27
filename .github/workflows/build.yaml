@@ -142,8 +142,8 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
-          docker-compose build base;
-          docker-compose push base;
+          docker compose build base;
+          docker compose push base;
           ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/base:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/base:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/base:#{tag}}}"
       - name: Build and push web
         if: ${{ inputs.webTarget != '' }}
@@ -152,8 +152,8 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
-          docker-compose build web;
-          docker-compose push web;
+          docker compose build web;
+          docker compose push web;
           ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}:#{tag}}}"
       - name: Build and push worker
         if: ${{ inputs.workerTarget != '' }}
@@ -162,8 +162,8 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
-          docker-compose build worker;
-          docker-compose push worker;
+          docker compose build worker;
+          docker compose push worker;
           ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/worker:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/worker:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/worker:#{tag}}}"
       - name: Build and push solr
         if: ${{ inputs.solrTarget != '' }}
@@ -172,6 +172,6 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
-          docker-compose build solr;
-          docker-compose push solr;
+          docker compose build solr;
+          docker compose push solr;
           ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/solr:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/solr:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/solr:#{tag}}}"

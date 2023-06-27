@@ -137,58 +137,41 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Build and push base
         if: ${{ inputs.baseTarget != '' }}
-        uses: docker/build-push-action@v3
-        with:
-          build-args: |
-            APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:latest
-          context: .
-          file: ${{ inputs.subdir}}/Dockerfile
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-base.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:${{ env.TAG }}
-          target: ${{ inputs.baseTarget }}
+        env:
+          TAGS: ${{ steps.meta-base.outputs.tags }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
+          docker-compose build base;
+          docker-compose push base;
+          ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/base:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/base:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/base:#{tag}}}"
       - name: Build and push web
         if: ${{ inputs.webTarget != '' }}
-        uses: docker/build-push-action@v3
-        with:
-          build-args: |
-            APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:latest
-          context: .
-          file: ${{ inputs.subdir}}/Dockerfile
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-web.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
-          target: ${{ inputs.webTarget }}
+        env:
+          TAGS: ${{ steps.meta-web.outputs.tags }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
+          docker-compose build web;
+          docker-compose push web;
+          ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}:#{tag}}}"
       - name: Build and push worker
         if: ${{ inputs.workerTarget != '' }}
-        uses: docker/build-push-action@v3
-        with:
-          build-args: |
-            APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:latest
-          context: .
-          file: ${{ inputs.subdir}}/Dockerfile
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-worker.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
-          target: ${{ inputs.workerTarget }}
+        env:
+          TAGS: ${{ steps.meta-worker.outputs.tags }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
+          docker-compose build worker;
+          docker-compose push worker;
+          ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/worker:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/worker:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/worker:#{tag}}}"
       - name: Build and push solr
         if: ${{ inputs.solrTarget != '' }}
-        uses: docker/build-push-action@v3
-        with:
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:latest
-          context: ./solr
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-solr.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
-          target: ${{ inputs.solrTarget }}
+        env:
+          TAGS: ${{ steps.meta-solr.outputs.tags }}
+        run: >-
+          cd ${{ inputs.subdir }};
+          [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
+          docker-compose build solr;
+          docker-compose push solr;
+          ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/solr:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/solr:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}/solr:#{tag}}}"

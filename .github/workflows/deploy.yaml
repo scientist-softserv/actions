@@ -56,7 +56,6 @@ jobs:
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
       ENVCONFIG_FILE: ${{ secrets.ENVCONFIG_FILE }}
       KUBECONFIG: ./kubeconfig.yml
-      ENVCONFIG: ./.env.production
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       AUTHORIZE_NET_LOGIN: ${{ secrets.AUTHORIZE_NET_LOGIN }}
       AUTHORIZE_NET_TRANSACTION_KEY: ${{ secrets.AUTHORIZE_NET_TRANSACTION_KEY }}

@@ -54,7 +54,9 @@ jobs:
       HELM_EXTRA_ARGS: >
         --values ops/${{ inputs.environment }}-deploy.yaml
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
+      ENVCONFIG_FILE: ${{ secrets.ENVCONFIG_FILE }}
       KUBECONFIG: ./kubeconfig.yml
+      ENVCONFIG: ./.env.production
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       AUTHORIZE_NET_LOGIN: ${{ secrets.AUTHORIZE_NET_LOGIN }}
       AUTHORIZE_NET_TRANSACTION_KEY: ${{ secrets.AUTHORIZE_NET_TRANSACTION_KEY }}
@@ -98,7 +100,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.14
+        uses: scientist-softserv/actions/setup-env@testing-deploy-env-vars
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}

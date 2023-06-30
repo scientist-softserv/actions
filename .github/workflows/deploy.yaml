@@ -54,7 +54,7 @@ jobs:
       HELM_EXTRA_ARGS: >
         --values ops/${{ inputs.environment }}-deploy.yaml
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
-      ENVCONFIG_FILE: ${{ secrets.ENVCONFIG_FILE }}
+      ENCRYPTED_ENV_FILE: ${{ secrets.ENCRYPTED_ENV_FILE }}
       KUBECONFIG: ./kubeconfig.yml
     steps:
       - id: setup

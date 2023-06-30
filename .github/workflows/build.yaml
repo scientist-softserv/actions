@@ -98,6 +98,7 @@ jobs:
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
+          TAG=latest docker-compose pull base || true;
           TAG=latest docker-compose pull web || true
       - name: Retag action for base
         if: ${{ inputs.baseTarget != '' }}

@@ -72,6 +72,7 @@ jobs:
       - name: Do deploy with solr image
         if: ${{ inputs.deploy-solr-image }}
         run: |
+          echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           export DEPLOY_TAG=${TAG};
           export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
           export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;
@@ -80,6 +81,7 @@ jobs:
       - name: Do deploy
         if: ${{ inputs.deploy-solr-image }} == 'false'
         run: |
+          echo $KUBECONFIG_FILE | base64 -d > $KUBECONFIG;
           export DEPLOY_TAG=${TAG};
           export DEPLOY_IMAGE=ghcr.io/${REPO_LOWER};
           export WORKER_IMAGE=ghcr.io/${REPO_LOWER}/worker;

@@ -55,7 +55,6 @@ jobs:
         --values ops/${{ inputs.environment }}-deploy.yaml
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
       ENCRYPTED_ENV_FILE: ${{ secrets.ENCRYPTED_ENV_FILE }}
-      DECRYPTED_ENV_FILE: ./.env.${{ inputs.environment }}.dec
       KUBECONFIG: ./kubeconfig.yml
     steps:
       - id: setup

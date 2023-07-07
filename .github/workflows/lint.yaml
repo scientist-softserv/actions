@@ -75,28 +75,12 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - name: Pull base image to prevent build
-        if: ${{ inputs.baseTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          docker compose pull base
-      - name: Pull solr image to prevent build
-        if: ${{ inputs.solrTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          docker compose pull solr
-      - name: Pull web image to prevent build
-        if: ${{ inputs.webTarget != '' }}
+      - name: Pull images to prevent build
         run: >-
           cd ${{ inputs.subdir }};
           touch .env.development;
           touch .env;
-          docker compose pull web
-      - name: Pull worker image to prevent build
-        if: ${{ inputs.workerTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          docker compose pull worker
+          docker compose pull
       - name: Run Rubocop
         run: >-
           cd ${{ inputs.subdir }};

@@ -6,10 +6,6 @@ on:
         description: "Used to set your target for the base image"
         required: false
         type: string
-      fetch_depth:
-        required: false
-        type: string
-        default: 1
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
@@ -34,10 +30,6 @@ on:
         description: "Used to set your target for the base image"
         required: false
         type: string
-      fetch_depth:
-        required: false
-        type: string
-        default: 1
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
@@ -70,7 +62,6 @@ jobs:
         name: Setup
         uses: scientist-softserv/actions/setup-env@v0.0.14
         with:
-          fetch_depth: ${{ inputs.fetch_depth }}
           tag: ${{ inputs.tag }}
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Github Container Login

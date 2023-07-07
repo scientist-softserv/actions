@@ -1,9 +1,6 @@
 name: "Set up env vars"
 description: "Set up env vars"
 inputs:
-  fetch_depth:
-    required: true
-    type: string
   image_name:
     required: false
     type: string
@@ -35,4 +32,3 @@ runs:
       with:
         submodules: true
         token: ${{ inputs.token }}
-        fetch-depth: ${{ inputs.fetch_depth }}

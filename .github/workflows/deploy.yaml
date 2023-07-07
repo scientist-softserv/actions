@@ -2,10 +2,6 @@ name: "Deploy"
 on:
   workflow_dispatch:
     inputs:
-      fetch_depth:
-        required: false
-        type: string
-        default: 1
       image_name:
         type: string
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
@@ -25,10 +21,6 @@ on:
         type: string
   workflow_call:
     inputs:
-      fetch_depth:
-        required: false
-        type: string
-        default: 1
       image_name:
         type: string
         description: "Docker image name part. Fills in ghcr.io/IMAGE_NAME. Typically this is the `repo_name`, but in some projects it might be `repo_name/sub_name`"
@@ -111,7 +103,6 @@ jobs:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
-          fetch_depth: ${{ inputs.fetch_depth }}
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}

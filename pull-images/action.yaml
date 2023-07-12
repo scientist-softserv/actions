@@ -22,18 +22,21 @@ runs:
   steps:
     - name: Pull base image to prevent build
       if: ${{ inputs.baseTarget != '' }}
+      shell: bash
       run: >-
         cd ${{ inputs.subdir }};
         docker compose pull base &&
         echo 'Pulled $TAG'
     - name: Pull solr image to prevent build
       if: ${{ inputs.solrTarget != '' }}
+      shell: bash
       run: >-
         cd ${{ inputs.subdir }};
         docker compose pull solr &&
         echo 'Pulled $TAG'
     - name: Pull web image to prevent build
       if: ${{ inputs.webTarget != '' }}
+      shell: bash
       run: >-
         cd ${{ inputs.subdir }};
         touch .env.development
@@ -42,6 +45,7 @@ runs:
         echo 'Pulled $TAG'
     - name: Pull worker image to prevent build
       if: ${{ inputs.workerTarget != '' }}
+      shell: bash
       run: >-
         cd ${{ inputs.subdir }};
         docker compose pull worker &&

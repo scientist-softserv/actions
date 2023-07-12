@@ -1,0 +1,48 @@
+name: "Pull images"
+description: "pull images down from docker to prevent extra builds"
+inputs:
+  baseTarget:
+    required: false
+    type: string
+  solrTarget:
+    required: false
+    type: string
+  subdir:
+    required: false
+    type: string
+  webTarget:
+    required: false
+    type: string
+  workerTarget:
+    required: false
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Pull base image to prevent build
+      if: ${{ inputs.baseTarget != '' }}
+      run: >-
+        cd ${{ inputs.subdir }};
+        docker compose pull base &&
+        echo 'Pulled $TAG'
+    - name: Pull solr image to prevent build
+      if: ${{ inputs.solrTarget != '' }}
+      run: >-
+        cd ${{ inputs.subdir }};
+        docker compose pull solr &&
+        echo 'Pulled $TAG'
+    - name: Pull web image to prevent build
+      if: ${{ inputs.webTarget != '' }}
+      run: >-
+        cd ${{ inputs.subdir }};
+        touch .env.development
+        touch .env;
+        docker compose pull web &&
+        echo 'Pulled $TAG'
+    - name: Pull worker image to prevent build
+      if: ${{ inputs.workerTarget != '' }}
+      run: >-
+        cd ${{ inputs.subdir }};
+        docker compose pull worker &&
+        echo 'Pulled $TAG'

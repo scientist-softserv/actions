@@ -123,28 +123,15 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - name: Pull base image to prevent build
-        if: ${{ inputs.baseTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          docker compose pull base
-      - name: Pull solr image to prevent build
-        if: ${{ inputs.solrTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          docker compose pull solr
-      - name: Pull web image to prevent build
-        if: ${{ inputs.webTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          touch .env.development;
-          touch .env;
-          docker compose pull web
-      - name: Pull worker image to prevent build
-        if: ${{ inputs.workerTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          docker compose pull worker
+      - id: pull
+        name: Pull Images
+        uses: scientist-softserv/actions/pull-images@make_actions_more_like_local
+        with:
+          baseTarget: ${{ inputs.baseTarget }}
+          solrTarget: ${{ inputs.solrTarget }}
+          subdir: ${{ inputs.subdir }}
+          webTarget: ${{ inputs.webTarget }}
+          workerTarget: ${{ inputs.workerTarget }}
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};

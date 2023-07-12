@@ -22,10 +22,11 @@ runs:
         BUILD_LOCATION: ${{ inputs.location }}
         BUILD_TYPE: ${{ inputs.type }}
         TAGS: ${{ inputs.tags }}
+      shell: bash
       run: >-
         cd ${{ inputs.subdir }};
         [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
         [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
-        docker compose build ${{ BUILD_TYPE }} --build-arg BUILDKIT_INLINE_CACHE=1 &&
-        docker compose push ${{ BUILD_TYPE }} &&
+        docker compose build ${BUILD_TYPE} --build-arg BUILDKIT_INLINE_CACHE=1 &&
+        docker compose push ${BUILD_TYPE} &&
         ruby -e "ENV.fetch('TAGS', []).split(',').each {|tag| %x{docker tag #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}#{ENV['BUILD_LOCATION']}:#{ENV['TAG']} #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}#{ENV['BUILD_LOCATION']}:#{tag}}; %x{docker push #{ENV['REGISTRY']}/#{ENV['REPO_LOWER']}#{ENV['BUILD_LOCATION']}:#{tag}}}"

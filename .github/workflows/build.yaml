@@ -94,14 +94,6 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - name: Pull from cache to speed up web build
-        if: ${{ inputs.webTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          touch .env.development;
-          touch .env;
-          TAG=latest docker compose pull base || true;
-          TAG=latest docker compose pull web || true
       - name: Retag action for base
         if: ${{ inputs.baseTarget != '' }}
         id: meta-base

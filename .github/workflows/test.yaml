@@ -123,20 +123,12 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - id: pull
-        name: Pull Images
-        uses: scientist-softserv/actions/pull-images@make_actions_more_like_local
-        with:
-          baseTarget: ${{ inputs.baseTarget }}
-          solrTarget: ${{ inputs.solrTarget }}
-          subdir: ${{ inputs.subdir }}
-          webTarget: ${{ inputs.webTarget }}
-          workerTarget: ${{ inputs.workerTarget }}
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
           [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
+          docker compose pull;
           docker compose up -d
       - name: Setup Solr
         if: ${{ inputs.solrTarget != '' }}

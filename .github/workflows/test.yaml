@@ -128,7 +128,7 @@ jobs:
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
           [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
-          docker compose pull;
+          docker compose pull --ignore-pull-failures;
           docker compose up -d
       - name: Setup Solr
         if: ${{ inputs.solrTarget != '' }}

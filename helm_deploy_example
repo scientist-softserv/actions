@@ -3,7 +3,8 @@
 # helm_deploy configuration checklist:
 # If the ./hyrax chart directory exists, move the contents to the ./chart directory
 # Set the ENCODED_ENV_FILE,
-# Substitute the $TAG variable in the values file, example:
+# Substitute the $TAG variable in the values file for each
+# service (web/solr/worker,etc.) with a specified image, example:
 # web:
 #   image:
 #     tag: $TAG

@@ -1,0 +1,54 @@
+name: Create Project Columns
+
+on:
+  project:
+    types:
+      - created
+
+jobs:
+  create_columns_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Project Columns
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const columnsToAdd = [
+              'No Status',
+              'Ready for Development',
+              'In Development',
+              'Code Review',
+              'Deploy to Staging',
+              'Softserv QA',
+              'Client QA',
+              'Deploy to Production',
+              'Client Verification',
+              'Done',
+            ];
+            const { project } = context.payload;
+            const projectId = project.id;
+            const authToken = process.env.GITHUB_TOKEN;
+
+            const createColumn = async (name) => {
+              const response = await github.graphql(`
+                mutation {
+                  createProjectColumn(input: {projectId: "${projectId}", name: "${name}"}) {
+                    columnEdge {
+                      node {
+                        name
+                      }
+                    }
+                  }
+                }
+              `);
+              return response.data.createProjectColumn.columnEdge.node;
+            };
+
+            const { github } = require('@actions/github');
+
+            for (const column of columnsToAdd) {
+              await createColumn(column);
+            }
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

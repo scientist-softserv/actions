@@ -54,6 +54,7 @@ jobs:
       HELM_EXTRA_ARGS: >
         --values ops/${{ inputs.environment }}-deploy.yaml
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
+      ENCODED_ENV_FILE: ${{ secrets.ENCODED_ENV_FILE }}
       KUBECONFIG: ./kubeconfig.yml
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       AUTHORIZE_NET_LOGIN: ${{ secrets.AUTHORIZE_NET_LOGIN }}

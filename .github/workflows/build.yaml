@@ -132,7 +132,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Build and push base
         if: ${{ inputs.baseTarget != '' }}
-        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
+        uses: scientist-softserv/actions/build-and-push@v0.0.15
         with:
           type: base
           location: /base
@@ -140,7 +140,7 @@ jobs:
           tags: ${{ steps.meta-base.outputs.tags }}
       - name: Build and push web
         if: ${{ inputs.webTarget != '' }}
-        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
+        uses: scientist-softserv/actions/build-and-push@v0.0.15
         with:
           type: web
           location: ""
@@ -148,7 +148,7 @@ jobs:
           tags: ${{ steps.meta-base.outputs.tags }}
       - name: Build and push worker
         if: ${{ inputs.workerTarget != '' }}
-        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
+        uses: scientist-softserv/actions/build-and-push@v0.0.15
         with:
           type: worker
           location: /worker
@@ -156,7 +156,7 @@ jobs:
           tags: ${{ steps.meta-worker.outputs.tags }}
       - name: Build and push solr
         if: ${{ inputs.solrTarget != '' }}
-        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
+        uses: scientist-softserv/actions/build-and-push@v0.0.15
         with:
           type: solr
           location: /solr

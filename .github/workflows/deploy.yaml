@@ -57,6 +57,7 @@ jobs:
       ENCODED_ENV_FILE: ${{ secrets.ENCODED_ENV_FILE }}
       KUBECONFIG: ./kubeconfig.yml
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      APP_PASS: ${{ secrets.APP_PASS }}
       AUTHORIZE_NET_LOGIN: ${{ secrets.AUTHORIZE_NET_LOGIN }}
       AUTHORIZE_NET_TRANSACTION_KEY: ${{ secrets.AUTHORIZE_NET_TRANSACTION_KEY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

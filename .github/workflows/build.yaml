@@ -65,6 +65,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
 
 jobs:
   build:
@@ -92,13 +94,6 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - name: Pull from cache to speed up web build
-        if: ${{ inputs.webTarget != '' }}
-        run: >-
-          cd ${{ inputs.subdir }};
-          touch .env.development;
-          touch .env;
-          TAG=latest docker-compose pull web || true
       - name: Retag action for base
         if: ${{ inputs.baseTarget != '' }}
         id: meta-base
@@ -137,58 +132,33 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Build and push base
         if: ${{ inputs.baseTarget != '' }}
-        uses: docker/build-push-action@v3
+        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
         with:
-          build-args: |
-            APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:latest
-          context: .
-          file: ${{ inputs.subdir}}/Dockerfile
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-base.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/base:${{ env.TAG }}
-          target: ${{ inputs.baseTarget }}
+          type: base
+          location: /base
+          subdir: ${{ inputs.subdir }}
+          tags: ${{ steps.meta-base.outputs.tags }}
       - name: Build and push web
         if: ${{ inputs.webTarget != '' }}
-        uses: docker/build-push-action@v3
+        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
         with:
-          build-args: |
-            APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:latest
-          context: .
-          file: ${{ inputs.subdir}}/Dockerfile
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-web.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}:${{ env.TAG }}
-          target: ${{ inputs.webTarget }}
+          type: web
+          location: ""
+          subdir: ${{ inputs.subdir }}
+          tags: ${{ steps.meta-base.outputs.tags }}
       - name: Build and push worker
         if: ${{ inputs.workerTarget != '' }}
-        uses: docker/build-push-action@v3
+        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
         with:
-          build-args: |
-            APP_PATH=${{ inputs.subdir }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:latest
-          context: .
-          file: ${{ inputs.subdir}}/Dockerfile
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-worker.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:${{ env.TAG }}
-          target: ${{ inputs.workerTarget }}
+          type: worker
+          location: /worker
+          subdir: ${{ inputs.subdir }}
+          tags: ${{ steps.meta-worker.outputs.tags }}
       - name: Build and push solr
         if: ${{ inputs.solrTarget != '' }}
-        uses: docker/build-push-action@v3
+        uses: scientist-softserv/actions/build-and-push@make_actions_more_like_local
         with:
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:latest
-          context: ./solr
-          platforms: ${{ inputs.platforms }}
-          push: true
-          tags: |
-            ${{ steps.meta-solr.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr:${{ env.TAG }}
-          target: ${{ inputs.solrTarget }}
+          type: solr
+          location: /solr
+          subdir: ${{ inputs.subdir }}
+          tags: ${{ steps.meta-solr.outputs.tags }}

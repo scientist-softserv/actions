@@ -128,7 +128,6 @@ jobs:
           docker-compose exec -T web sh -c
           "${{ inputs.setup_db_cmd }}"
       - name: Run Cypress Tests
-        id: run-cypress-specs
         env:
           # Specifies how many jobs you would like to run in parallel,
           # used for partitioning
@@ -140,7 +139,12 @@ jobs:
           cd ${{ inputs.subdir }};
           docker compose up ${{ inputs.cypress-container-name }}
       - name: Fail Cypress job if spec failure
-        run: if [[ ${{ steps.run-cypress-specs.outcome }} == "failure" ]]; then exit 1; else exit 0; fi
+        run: |
+          if [[ ${{ steps.cypress-tests.outcome }} == "failure" ]]; then
+            exit 1
+          else
+            exit 0
+          fi
       - name: Publish Cypress Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

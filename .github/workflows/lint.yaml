@@ -6,6 +6,10 @@ on:
         description: "Used to set your target for the base image"
         required: false
         type: string
+      lint_cmd:
+        required: false
+        type: string
+        default: "docker compose run web bundle exec rubocop --parallel --format progress"
       rubocop_cmd:
         default: docker-compose run web bundle exec rubocop --parallel --format progress
         required: false
@@ -34,6 +38,10 @@ on:
         description: "Used to set your target for the base image"
         required: false
         type: string
+      lint_cmd:
+        required: false
+        type: string
+        default: "docker compose run web bundle exec rubocop --parallel --format progress"
       rubocop_cmd:
         default: docker-compose run web bundle exec rubocop --parallel --format progress
         required: false
@@ -89,6 +97,7 @@ jobs:
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
           [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
           docker compose pull web || true;
+          "${{ inputs.lint_cmd }}"
           docker compose run web bundle exec rubocop --parallel --format progress
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3

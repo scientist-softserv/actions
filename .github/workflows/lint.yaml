@@ -6,6 +6,10 @@ on:
         description: "Used to set your target for the base image"
         required: false
         type: string
+      lint_cmd:
+        required: false
+        type: string
+        default: docker compose run web bundle exec rubocop --parallel --format progress
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
@@ -30,6 +34,10 @@ on:
         description: "Used to set your target for the base image"
         required: false
         type: string
+      lint_cmd:
+        required: false
+        type: string
+        default: docker compose run web bundle exec rubocop --parallel --format progress
       solrTarget:
         description: "Used to set your target for the solr image"
         required: false
@@ -58,7 +66,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@adl-update-build
+        uses: scientist-softserv/actions/setup-env@v0.0.14
         with:
           tag: ${{ inputs.tag }}
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
@@ -94,7 +102,7 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
-          docker-compose run web bundle exec rubocop --parallel --format progress
+          ${{ inputs.lint_cmd }}
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

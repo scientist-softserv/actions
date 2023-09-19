@@ -9,7 +9,7 @@ on:
       lint_cmd:
         required: false
         type: string
-        default: "docker compose run web bundle exec rubocop --parallel --format progress"
+        default: docker compose run web bundle exec rubocop --parallel --format progress
       rubocop_cmd:
         default: docker-compose run web bundle exec rubocop --parallel --format progress
         required: false

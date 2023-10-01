@@ -102,9 +102,6 @@ jobs:
     env:
       ALLOW_ANONYMOUS_LOGIN: "yes"
       CONFDIR: ${{ inputs.confdir }}
-      DB_CLEANER_ALLOW_REMOTE_DB_URL: "true"
-      TB_RSPEC_FORMATTER: progress
-      TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml
     steps:
       - id: setup
         name: Setup
@@ -155,10 +152,13 @@ jobs:
           cd ${{ inputs.subdir }};
           docker compose exec -T web sh -c
           "${{ inputs.rspec_cmd }}"
-      - name: Fail job if spec failure
-        run: if [[ ${{ steps.run-specs.outcome }} == "failure" ]]; then exit 1; else exit 0; fi
+
+      # you need TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml and TB_RSPEC_FORMATTER: progress in your .env for this to work
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
-        if: always() # always run even if the previous step fails
+        if: success() || failure()
         with:
-          report_paths: 'rspec*.xml'
+          report_paths: '**/rspec*.xml'
+          fail_on_failure: true
+          require_passed_tests: true
+          detailed_summary: true

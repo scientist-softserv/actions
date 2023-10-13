@@ -4,18 +4,10 @@ run-name: Bundler Audit (${{ github.ref_name }} -> ${{ inputs.environment }}) by
 on:
   workflow_dispatch:
     inputs:
-      baseTarget:
-        description: "Used to set your target for the base image"
-        required: false
-        type: string
       bundler_audit_cmd:
         required: false
         type: string
         default: "gem install bundler-audit && bundle exec bundler audit check --update"
-      solrTarget:
-        description: "Used to set your target for the solr image"
-        required: false
-        type: string
       subdir:
         default: '.'
         type: string
@@ -24,26 +16,14 @@ on:
         type: string
       webTarget:
         description: "Used to set your target for the web image"
-        required: false
-        type: string
-      workerTarget:
-        description: "Used to set your target for the worker image"
         required: false
         type: string
   workflow_call:
     inputs:
-      baseTarget:
-        description: "Used to set your target for the base image"
-        required: false
-        type: string
       bundler_audit_cmd:
         required: false
         type: string
         default: "gem install bundler-audit && bundle exec bundler audit check --update"
-      solrTarget:
-        description: "Used to set your target for the solr image"
-        required: false
-        type: string
       subdir:
         default: '.'
         type: string
@@ -52,10 +32,6 @@ on:
         type: string
       webTarget:
         description: "Used to set your target for the web image"
-        required: false
-        type: string
-      workerTarget:
-        description: "Used to set your target for the worker image"
         required: false
         type: string
 
@@ -78,11 +54,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-        with:
-          limit-access-to-actor: true
       - name: Pull web image to prevent build
         if: ${{ inputs.webTarget != '' }}
         run: >-
@@ -90,6 +61,11 @@ jobs:
           touch .env.development;
           touch .env;
           docker-compose pull web
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        with:
+          limit-access-to-actor: true
       - name: Run Bundler Audit
         run: >-
           cd ${{ inputs.subdir }};

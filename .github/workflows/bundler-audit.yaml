@@ -62,8 +62,9 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           docker-compose run web sh -c "gem install bundler-audit && bundler-audit check --update"
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v3
-        if: always()
+      - name: Publish Bundler Audit Report
+        if: failure()
+        uses: actions/upload-artifact@v2
         with:
-          report_paths: 'bundle-audit*.xml'
+          name: bundler-audit-report
+          path: bundler-audit-report.txt

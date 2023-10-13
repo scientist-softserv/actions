@@ -1,5 +1,5 @@
-name: "Bundler Audit"
-run-name: Bundler Audit (${{ github.ref_name }} -> ${{ inputs.environment }}) by @${{ github.actor }}
+name: "Brakeman Audit"
+run-name: Brakeman Audit (${{ github.ref_name }} -> ${{ inputs.environment }}) by @${{ github.actor }}
 
 on:
   workflow_dispatch:
@@ -31,7 +31,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  bundler-audit:
+  brakeman-audit:
     runs-on: ubuntu-latest
     steps:
       - id: setup
@@ -58,17 +58,17 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
-      - name: Run Bundler Audit
+      - name: Run Brakeman Audit
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose run --name audit-container web sh -c "gem install bundler-audit && bundler-audit check --update > bundler-audit-report.txt"
+          docker-compose run --name audit-container web sh -c "gem install brakeman && brakeman --force -A --no-assume-routes --no-color -f text > brakeman-audit-report.txt"
       - name: Copy Report from Container
         run: >-
-          docker cp audit-container:/bundler-audit-report.txt ./bundler-audit-report.txt
+          docker cp audit-container:/brakeman-audit-report.txt ./brakeman-audit-report.txt
           docker rm audit-container
-      - name: Publish Bundler Audit Report
+      - name: Publish Brakeman Audit Report
         if: failure()
         uses: actions/upload-artifact@v2
         with:
-          name: bundler-audit-report
-          path: bundler-audit-report.txt
+          name: brakeman-audit-report
+          path: brakeman-audit-report.txt

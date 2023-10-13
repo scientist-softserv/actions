@@ -94,7 +94,6 @@ jobs:
         run: >-
           cd ${{ inputs.subdir }};
           gem install bundler-audit
-          bundle install
       - name: Run Bundle Audit
         run: >-
           cd ${{ inputs.subdir }};

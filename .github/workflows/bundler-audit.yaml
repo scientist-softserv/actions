@@ -61,7 +61,7 @@ jobs:
       - name: Run Bundler Audit
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose run web sh -c "gem install bundler-audit && bundler-audit check --update"
+          docker-compose run web sh -c "gem install bundler-audit && bundler-audit check --update > bundler-audit-report.txt"
       - name: Publish Bundler Audit Report
         if: failure()
         uses: actions/upload-artifact@v2

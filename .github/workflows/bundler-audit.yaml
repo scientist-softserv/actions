@@ -4,10 +4,6 @@ run-name: Bundler Audit (${{ github.ref_name }} -> ${{ inputs.environment }}) by
 on:
   workflow_dispatch:
     inputs:
-      bundler_audit_cmd:
-        required: false
-        type: string
-        default: "gem install bundler-audit && bundle exec bundler audit check --update"
       subdir:
         default: '.'
         type: string
@@ -20,10 +16,6 @@ on:
         type: string
   workflow_call:
     inputs:
-      bundler_audit_cmd:
-        required: false
-        type: string
-        default: "gem install bundler-audit && bundle exec bundler audit check --update"
       subdir:
         default: '.'
         type: string
@@ -69,8 +61,7 @@ jobs:
       - name: Run Bundler Audit
         run: >-
           cd ${{ inputs.subdir }};
-          docker-compose exec -T web sh -c
-          "${{ inputs.bundler_audit_cmd }}"
+          docker-compose run web sh -c "gem install bundler-audit && bundler-audit check --update"
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always()

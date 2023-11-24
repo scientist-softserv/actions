@@ -36,6 +36,8 @@ jobs:
         --values ops/${{ inputs.environment }}-deploy.yaml
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
       KUBECONFIG: ./kubeconfig.yml
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       APP_KEY: ${{ secrets.APP_KEY }}
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}

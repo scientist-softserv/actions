@@ -87,6 +87,7 @@ jobs:
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       SENDGRID_PASSWORD: ${{ secrets.SENDGRID_PASSWORD }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT }}
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}

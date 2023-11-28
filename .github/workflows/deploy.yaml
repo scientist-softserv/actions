@@ -48,14 +48,6 @@ jobs:
     container: dtzar/helm-kubectl:3.9.4
     environment: ${{ inputs.environment }}
     env:
-      HELM_EXPERIMENTAL_OCI: 1
-      HELM_RELEASE_NAME: ${{ github.event.repository.name }}-${{ inputs.environment }}
-      KUBE_NAMESPACE: ${{ github.event.repository.name }}-${{ inputs.environment }}
-      HELM_EXTRA_ARGS: >
-        --values ops/${{ inputs.environment }}-deploy.yaml
-      KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
-      ENCODED_ENV_FILE: ${{ secrets.ENCODED_ENV_FILE }}
-      KUBECONFIG: ./kubeconfig.yml
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       AUTHORIZE_NET_LOGIN: ${{ secrets.AUTHORIZE_NET_LOGIN }}
       AUTHORIZE_NET_TRANSACTION_KEY: ${{ secrets.AUTHORIZE_NET_TRANSACTION_KEY }}
@@ -69,11 +61,19 @@ jobs:
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      ENCODED_ENV_FILE: ${{ secrets.ENCODED_ENV_FILE }}
       GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
       GOOGLE_FONTS_KEY: ${{ secrets.GOOGLE_FONTS_KEY }}
       GOOGLE_OAUTH_PRIVATE_KEY_SECRET: ${{ secrets.GOOGLE_OAUTH_PRIVATE_KEY_SECRET }}
       GOOGLE_OAUTH_PRIVATE_KEY_VALUE: ${{ secrets.GOOGLE_OAUTH_PRIVATE_KEY_VALUE }}
+      HELM_EXPERIMENTAL_OCI: 1
+      HELM_EXTRA_ARGS: >
+        --values ops/${{ inputs.environment }}-deploy.yaml
+      HELM_RELEASE_NAME: ${{ github.event.repository.name }}-${{ inputs.environment }}
       IA_PASSWORD: ${{ secrets.IA_PASSWORD }}
+      KUBECONFIG: ./kubeconfig.yml
+      KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
+      KUBE_NAMESPACE: ${{ github.event.repository.name }}-${{ inputs.environment }}
       MAIL_PASS: ${{ secrets.MAIL_PASS }}
       MARIADB_PASSWORD: ${{ secrets.MARIADB_PASSWORD }}
       MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
@@ -87,6 +87,7 @@ jobs:
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
       SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
       SENDGRID_PASSWORD: ${{ secrets.SENDGRID_PASSWORD }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT }}
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}

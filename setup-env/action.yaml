@@ -4,6 +4,9 @@ inputs:
   image_name:
     required: false
     type: string
+  subdir:
+    default: '.'
+    type: string
   tag:
     required: false
     type: string
@@ -34,3 +37,8 @@ runs:
         submodules: true
         token: ${{ inputs.token }}
         clean: false
+    - name: Make sure env files are present if missing
+       run: >-
+         cd ${{ inputs.subdir }};
+         touch .env.development;
+         touch .env;

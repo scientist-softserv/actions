@@ -105,10 +105,11 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.14
+        uses: scientist-softserv/actions/setup-env@v0.0.16
         with:
           tag: ${{ inputs.tag }}
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
+          subdir: ${{ inputs.subdir }}
       - name: Github Container Login
         uses: docker/login-action@v2
         with:

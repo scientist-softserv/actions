@@ -38,7 +38,7 @@ runs:
         token: ${{ inputs.token }}
         clean: false
     - name: Make sure env files are present if missing
-       run: >-
-         cd ${{ inputs.subdir }};
-         touch .env.development;
-         touch .env;
+      run: >-
+        cd ${{ inputs.subdir }};
+        touch .env.development;
+        touch .env;

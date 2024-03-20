@@ -1,6 +1,7 @@
 name: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   report:

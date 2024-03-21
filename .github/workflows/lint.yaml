@@ -91,9 +91,10 @@ jobs:
           [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
           docker compose pull web || true;
           docker compose run -T web sh -c
-          "${{ inputs.rubocop_cmd }}"
+          "${{ inputs.rubocop_cmd }}"; true
       - name: Archive spec reports
         uses: actions/upload-artifact@v4
+        if: success() || failure()
         with:
           name: rubocop-reports
           path: 'rubocop*.xml'

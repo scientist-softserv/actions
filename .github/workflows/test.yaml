@@ -1,4 +1,4 @@
-name: "Rspec for Rails Apps"
+same: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
     inputs:
@@ -13,7 +13,7 @@ on:
       rspec_cmd:
         required: false
         type: string
-        default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+        default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL && cp rspec.xml rspec-$CI_NODE_INDEX.xml"
       setup_db_cmd:
         required: false
         type: string
@@ -53,7 +53,7 @@ on:
       rspec_cmd:
         required: false
         type: string
-        default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL"
+        default: "gem install semaphore_test_boosters && rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL && cp rspec.xml rspec-$CI_NODE_INDEX.xml"
       setup_db_cmd:
         required: false
         type: string

@@ -35,7 +35,7 @@ on:
         required: false
         type: string
       rubocop_cmd:
-        default: bundle exec rubocop --parallel --format progress
+        default: bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed
         required: false
         type: string
       solrTarget:

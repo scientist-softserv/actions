@@ -67,21 +67,12 @@ env:
   REGISTRY: ghcr.io
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Prepare the repository for Hyku Knapsack
-        run: |
-          echo "Current working directory: $(pwd)"
-          ls -la
-          git status
-          git remote add prime https://github.com/samvera-labs/hyku_knapsack
-          git fetch prime
-          git checkout -b required_for_knapsack_instances --track prime/required_for_knapsack_instances
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@v0.0.17
@@ -141,6 +132,11 @@ jobs:
             name=${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/solr
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
+      - name: Prepare the repository
+        run: |
+          git remote add prime https://github.com/samvera-labs/hyku_knapsack
+          git fetch prime
+          git branch required_for_knapsack_instances prime/required_for_knapsack_instances
       - name: Build and push base
         if: ${{ inputs.baseTarget != '' }}
         uses: scientist-softserv/actions/build-and-push@v0.0.17

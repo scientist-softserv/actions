@@ -76,6 +76,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Prepare the repository for Hyku Knapsack
         run: |
+          echo "Current working directory: $(pwd)"
+          ls -la
+          git status
           git remote add prime https://github.com/samvera-labs/hyku_knapsack
           git fetch prime
           git checkout -b required_for_knapsack_instances --track prime/required_for_knapsack_instances

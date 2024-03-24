@@ -72,6 +72,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Prepare the repository for Hyku Knapsack
+        run: |
+          git remote add prime https://github.com/samvera-labs/hyku_knapsack
+          git fetch prime
+          git checkout -b required_for_knapsack_instances --track prime/required_for_knapsack_instances
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@v0.0.17

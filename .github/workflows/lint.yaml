@@ -68,11 +68,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Prepare the repository for Hyku Knapsack
-        run: |
-          git remote add prime https://github.com/samvera-labs/hyku_knapsack
-          git fetch prime
-          git checkout -b required_for_knapsack_instances --track prime/required_for_knapsack_instances
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@v0.0.17
@@ -91,6 +86,11 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
+      - name: Prepare the repository for Hyku Knapsack
+        run: |
+          git remote add prime https://github.com/samvera-labs/hyku_knapsack
+          git fetch prime
+          git checkout -b required_for_knapsack_instances --track prime/required_for_knapsack_instances
       - name: Run Rubocop
         run: >-
           cd ${{ inputs.subdir }};
@@ -99,6 +99,11 @@ jobs:
           docker compose pull web || true;
           docker compose run -T web sh -c
           "${{ inputs.rubocop_cmd }}"
+      - name: Capture logs for initialize_app
+        if: failure()
+        run: |
+          echo "Capturing logs for initialize_app..."
+          docker compose logs initialize_app
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

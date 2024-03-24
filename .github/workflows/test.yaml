@@ -105,11 +105,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Prepare the repository for Hyku Knapsack
-        run: |
-          git remote add prime https://github.com/samvera-labs/hyku_knapsack
-          git fetch prime
-          git checkout -b required_for_knapsack_instances --track prime/required_for_knapsack_instances
       - id: setup
         name: Setup
         uses: scientist-softserv/actions/setup-env@v0.0.17
@@ -128,6 +123,11 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
+      - name: Prepare the repository for Hyku Knapsack
+        run: |
+          git remote add prime https://github.com/samvera-labs/hyku_knapsack
+          git fetch prime
+          git checkout -b required_for_knapsack_instances --track prime/required_for_knapsack_instances
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
@@ -135,6 +135,11 @@ jobs:
           [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
           docker compose pull --ignore-pull-failures;
           docker compose up -d
+      - name: Capture logs for initialize_app
+        if: failure()
+        run: |
+          echo "Capturing logs for initialize_app..."
+          docker compose logs initialize_app
       - name: Setup Solr
         if: ${{ inputs.solrTarget != '' }}
         shell: bash

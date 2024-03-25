@@ -52,6 +52,9 @@ on:
       subdir:
         default: '.'
         type: string
+      submoduledir:
+        default: 'hyrax-webapp'
+        type: string
       tag:
         required: false
         type: string

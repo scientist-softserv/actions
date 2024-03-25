@@ -117,7 +117,7 @@ jobs:
           pwd
           echo "submoduledir is ${{ inputs.submoduledir }}"
           if [ -d "${{ inputs.submoduledir }}" ]; then
-            docker compose run -T web sh -c "pwd && echo 'Entering submodule ${inputs.submoduledir}' && cd ${{ inputs.submoduledir }} && pwd && bundle install && ${{ inputs.rubocop_cmd }} && ${{ inputs.rubocop_knapsack_cmd }}"
+            docker compose run -T web sh -c "cd ${{ inputs.submoduledir }} && pwd && bundle install && ${{ inputs.rubocop_cmd }} && ${{ inputs.rubocop_knapsack_cmd }}"
           else
             docker compose run -T web sh -c "pwd && ${{ inputs.rubocop_cmd }}"
           fi

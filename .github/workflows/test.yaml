@@ -135,11 +135,6 @@ jobs:
           [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
           docker compose pull --ignore-pull-failures;
           docker compose up -d
-      - name: Capture logs for initialize_app
-        if: failure()
-        run: |
-          echo "Capturing logs for initialize_app..."
-          docker compose logs initialize_app
       - name: Setup Solr
         if: ${{ inputs.solrTarget != '' }}
         shell: bash

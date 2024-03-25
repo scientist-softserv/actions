@@ -99,11 +99,6 @@ jobs:
           docker compose pull web || true;
           docker compose run -T web sh -c
           "${{ inputs.rubocop_cmd }}"
-      - name: Capture logs for initialize_app
-        if: failure()
-        run: |
-          echo "Capturing logs for initialize_app..."
-          docker compose logs initialize_app
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails

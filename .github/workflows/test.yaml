@@ -1,4 +1,4 @@
-same: "Rspec for Rails Apps"
+name: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
     inputs:

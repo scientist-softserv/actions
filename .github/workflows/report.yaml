@@ -1,0 +1,31 @@
+name: "Rspec for Rails Apps"
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  report:
+    name: "Publish Lint and Test Results"
+    permissions:
+      checks: write
+      # only needed unless run with comment_mode: off
+      pull-requests: write
+      # only needed for private repository
+      contents: read
+      # only needed for private repository
+      issues: read
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+        # you need TB_RSPEC_OPTIONS: --format RspecJunitFormatter --out rspec.xml and TB_RSPEC_FORMATTER: progress in your .env for this to work
+      - name: Publish Test Report
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: "artifacts/**/*.xml"
+          action_fail_on_inconclusive: true
+          fail_on: "test failures"

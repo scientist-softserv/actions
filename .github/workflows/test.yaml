@@ -1,4 +1,4 @@
-name: "Rspec for Rails Apps"
+same: "Rspec for Rails Apps"
 on:
   workflow_dispatch:
     inputs:
@@ -13,7 +13,7 @@ on:
       rspec_cmd:
         required: false
         type: string
-        default: "gem install semaphore_test_boosters && rspec_booster --job ${CI_NODE_INDEX}/${CI_NODE_TOTAL}; mv rspec.xml rspec-${CI_NODE_INDEX}.xml; ls -l"
+        default: "gem install semaphore_test_boosters && rspec_booster --job ${CI_NODE_INDEX}/${CI_NODE_TOTAL}"
       setup_db_cmd:
         required: false
         type: string
@@ -53,7 +53,7 @@ on:
       rspec_cmd:
         required: false
         type: string
-        default: "gem install semaphore_test_boosters && rspec_booster --job ${CI_NODE_INDEX}/${CI_NODE_TOTAL}; mv rspec.xml rspec-${CI_NODE_INDEX}.xml; ls -l"
+        default: "gem install semaphore_test_boosters && rspec_booster --job ${CI_NODE_INDEX}/${CI_NODE_TOTAL}"
       setup_db_cmd:
         required: false
         type: string
@@ -152,11 +152,19 @@ jobs:
           cd ${{ inputs.subdir }};
           docker compose exec -T web sh -c
           "${{ inputs.rspec_cmd }}"
+      - name: Move Test Files
+        if: always()
+        env:
+          # Specifies how many jobs you would like to run in parallel,
+          # used for partitioning
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          # Use the index from matrix as an environment variable
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+        run: >-
+          mv rspec.xml rspec-${CI_NODE_INDEX}.xml
       - name: Archive spec reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: spec-reports-${{ matrix.ci_node_index }}
           path: '**/rspec*.xml'
-      - name: Fail job if spec failure
-        run: if [[ ${{ steps.run-specs.outcome }} == "failure" ]]; then exit 1; else exit 0; fi

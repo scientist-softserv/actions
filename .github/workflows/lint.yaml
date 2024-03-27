@@ -85,7 +85,6 @@ jobs:
         with:
           limit-access-to-actor: true
       - name: Run Rubocop
-        continue-on-error: true
         run: >-
           cd ${{ inputs.subdir }};
           [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
@@ -95,7 +94,7 @@ jobs:
           "${{ inputs.rubocop_cmd }}"
       - name: Archive spec reports
         uses: actions/upload-artifact@v4
-        if: success() || failure()
+        if: always()
         with:
           name: rubocop-reports
           path: 'rubocop*.xml'

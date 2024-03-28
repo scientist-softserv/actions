@@ -10,6 +10,14 @@ on:
         required: false
         type: string
         default: "/app/samvera/hyrax-webapp/solr/config"
+      node_index:
+        required: false
+        type: string
+        default '[0, 1, 2]'
+      node_total:
+        required: false
+        type: string
+        default: '[3]'
       rspec_cmd:
         required: false
         type: string
@@ -32,14 +40,6 @@ on:
       tag:
         required: false
         type: string
-      webTarget:
-        description: "Used to set your target for the web image"
-        required: false
-        type: string
-      workerTarget:
-        description: "Used to set your target for the worker image"
-        required: false
-        type: string
   workflow_call:
     inputs:
       baseTarget:
@@ -50,6 +50,14 @@ on:
         required: false
         type: string
         default: "/app/samvera/hyrax-webapp/solr/config"
+      node_index:
+        required: false
+        type: string
+        default '[0, 1, 2]'
+      node_total:
+        required: false
+        type: string
+        default: '[3]'
       rspec_cmd:
         required: false
         type: string
@@ -72,14 +80,6 @@ on:
       tag:
         required: false
         type: string
-      webTarget:
-        description: "Used to set your target for the web image"
-        required: false
-        type: string
-      workerTarget:
-        description: "Used to set your target for the worker image"
-        required: false
-        type: string
 
 env:
   REGISTRY: ghcr.io
@@ -95,17 +95,17 @@ jobs:
         # Set N number of parallel jobs you want to run tests on.
         # Use higher number if you have slow tests to split them on more parallel jobs.
         # Remember to update ci_node_index below to 0..N-1
-        ci_node_total: [3]
+        ci_node_total: ${{ inputs.node_total }}
         # set N-1 indexes for parallel jobs
         # When you run 2 parallel jobs then first job will have index 0, the second job will have index 1 etc
-        ci_node_index: [0, 1, 2]
+        ci_node_index: ${{ inputs.node_index }}
     env:
       ALLOW_ANONYMOUS_LOGIN: "yes"
       CONFDIR: ${{ inputs.confdir }}
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@v0.0.17
+        uses: scientist-softserv/actions/setup-env@v0.0.18
         with:
           tag: ${{ inputs.tag }}
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}

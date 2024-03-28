@@ -13,7 +13,7 @@ on:
       node_index:
         required: false
         type: string
-        default '[0, 1, 2]'
+        default: '[0, 1, 2]'
       node_total:
         required: false
         type: string
@@ -53,7 +53,7 @@ on:
       node_index:
         required: false
         type: string
-        default '[0, 1, 2]'
+        default: '[0, 1, 2]'
       node_total:
         required: false
         type: string

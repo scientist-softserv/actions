@@ -155,13 +155,14 @@ jobs:
       - name: Move Test Files
         if: always()
         env:
-          # Specifies how many jobs you would like to run in parallel,
-          # used for partitioning
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          # Use the index from matrix as an environment variable
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-        run: >-
-          mv rspec.xml rspec-${CI_NODE_INDEX}.xml
+        run: |
+          if [ -f rspec.xml ]; then
+            mv rspec.xml rspec-${CI_NODE_INDEX}.xml
+          else
+            echo "rspec.xml not found, skipping step."
+          fi
       - name: Archive spec reports
         uses: actions/upload-artifact@v4
         if: always()

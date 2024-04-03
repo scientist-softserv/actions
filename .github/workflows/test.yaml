@@ -155,10 +155,7 @@ jobs:
       - name: Move Test Files
         if: always()
         env:
-          # Specifies how many jobs you would like to run in parallel,
-          # used for partitioning
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          # Use the index from matrix as an environment variable
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         run: |
           if [ -f rspec.xml ]; then

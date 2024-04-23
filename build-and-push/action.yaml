@@ -21,6 +21,7 @@ runs:
     # See https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
     - name: Create more disk space
       run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      shell: bash
     - name: Build and push ${{ inputs.type }}
       env:
         BUILD_LOCATION: ${{ inputs.location }}

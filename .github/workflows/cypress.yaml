@@ -128,7 +128,7 @@ jobs:
       - name: Fail job if spec failure
         run: if [[ ${{ steps.run-specs.outcome }} == "failure" ]]; then exit 1; else exit 0; fi
       - name: Publish Cypress Test Report
-        uses: mikepenz/action-junit-report@v3
+        uses: mikepenz/action-junit-report@v4
         if: always() # always run even if the previous step fails
         with:
           report_paths: 'cypress/results/results-*.xml'

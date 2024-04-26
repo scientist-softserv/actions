@@ -102,7 +102,7 @@ jobs:
     steps:
       - id: setup
         name: Setup
-        uses: scientist-softserv/actions/setup-env@update-create-more-disk-space-action
+        uses: scientist-softserv/actions/setup-env@v0.0.22
         with:
           tag: ${{ inputs.tag }}
           image_name: ${{ inputs.image_name }}

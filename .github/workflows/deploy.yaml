@@ -73,6 +73,8 @@ jobs:
         --values ops/${{ inputs.environment }}-deploy.yaml
       HELM_RELEASE_NAME: ${{ github.event.repository.name }}-${{ inputs.environment }}
       IA_PASSWORD: ${{ secrets.IA_PASSWORD }}
+      INITIAL_ADMIN_PASSWORD: ${{ secrets.INITIAL_ADMIN_PASSWORD }}
+      INITIAL_SUPER_ADMIN_PASSWORD: ${{ secrets.INITIAL_SUPER_ADMIN_PASSWORD }}
       KUBECONFIG: ./kubeconfig.yml
       KUBECONFIG_FILE: ${{ secrets.KUBECONFIG_FILE }}
       KUBE_NAMESPACE: ${{ github.event.repository.name }}-${{ inputs.environment }}

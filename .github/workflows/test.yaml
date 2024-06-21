@@ -116,11 +116,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-        with:
-          limit-access-to-actor: true
       - name: Start containers
         run: >-
           cd ${{ inputs.subdir }};
@@ -140,6 +135,11 @@ jobs:
           cd ${{ inputs.subdir }};
           docker compose exec -T web sh -c
           "${{ inputs.setup_db_cmd }}"
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_step == 'test' }}
+        with:
+          limit-access-to-actor: true
       - name: Run Specs
         id: run-specs
         env:

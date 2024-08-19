@@ -28,7 +28,7 @@ runs:
         [ -f "db/schema.rb" ] && chmod 777 db/schema.rb;
         [ -f "bin/checkout_all.sh" ] && ./bin/checkout_all.sh;
         TAG=latest docker compose pull base || true;
-        if(${BUILD_TYPE} == 'web,worker'); then
+        if [ ${BUILD_TYPE} = "web,worker" ]; then
         BUILD_LOCATION='';
         TAG=latest docker compose pull web || true;
         docker compose build web --build-arg BUILDKIT_INLINE_CACHE=1 &&

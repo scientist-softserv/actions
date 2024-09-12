@@ -113,7 +113,7 @@ jobs:
           token: ${{ secrets.CHECKOUT_TOKEN || secrets.GITHUB_TOKEN }}
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_step == 'deploy' }}
         with:
           limit-access-to-actor: true
       - name: Do deploy with solr image

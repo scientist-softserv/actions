@@ -133,23 +133,31 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
       - name: Build and push base
         if: ${{ inputs.baseTarget != '' }}
-        uses: scientist-softserv/actions/build-and-push@v0.0.22
+        uses: scientist-softserv/actions/build-and-push@webworkersunited
         with:
           type: base
           location: /base
           subdir: ${{ inputs.subdir }}
           tags: ${{ steps.meta-base.outputs.tags }}
+      - name: Build and push web and worker
+        if: ${{ inputs.webTarget != '' && inputs.workerTarget != '' }}
+        uses: scientist-softserv/actions/build-and-push@webworkersunited
+        with:
+          type: web,worker
+          location: ""
+          subdir: ${{ inputs.subdir }}
+          tags: ${{ steps.meta-base.outputs.tags }}
       - name: Build and push web
-        if: ${{ inputs.webTarget != '' }}
-        uses: scientist-softserv/actions/build-and-push@v0.0.22
+        if: ${{ inputs.webTarget != '' && inputs.workerTarget == '' }}
+        uses: scientist-softserv/actions/build-and-push@webworkersunited
         with:
           type: web
           location: ""
           subdir: ${{ inputs.subdir }}
           tags: ${{ steps.meta-base.outputs.tags }}
       - name: Build and push worker
-        if: ${{ inputs.workerTarget != '' }}
-        uses: scientist-softserv/actions/build-and-push@v0.0.22
+        if: ${{ inputs.workerTarget != '' && inputs.webTarget == '' }}
+        uses: scientist-softserv/actions/build-and-push@webworkersunited
         with:
           type: worker
           location: /worker

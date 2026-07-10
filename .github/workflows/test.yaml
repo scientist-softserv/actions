@@ -143,6 +143,7 @@ jobs:
           merge-multiple: true
       - name: Load fork-PR images
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        shell: bash
         run: |
           shopt -s nullglob
           for f in /tmp/fork-images/*.tar; do

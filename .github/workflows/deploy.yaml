@@ -19,6 +19,10 @@ on:
         description: "Tag to override default of current branch sha"
         required: false
         type: string
+      environment:
+        description: "Environment to deploy to. Required for push-triggered callers, which have no dispatch inputs to inherit."
+        required: false
+        type: string
   workflow_call:
     inputs:
       image_name:
@@ -36,6 +40,10 @@ on:
         type: boolean
       tag:
         description: "Tag to override default of current branch sha"
+        required: false
+        type: string
+      environment:
+        description: "Environment to deploy to. Required for push-triggered callers, which have no dispatch inputs to inherit."
         required: false
         type: string
 
